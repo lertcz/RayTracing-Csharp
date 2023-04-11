@@ -7,16 +7,16 @@ using System.Windows.Media.Media3D;
 
 namespace RayTracer
 {
-    internal class vec3
+    internal class Vec3
     {
         public double[] e;
 
-        public vec3()
+        public Vec3()
         {
             e = new double[] { 0, 0, 0 };
         }
 
-        public vec3(double e0, double e1, double e2)
+        public Vec3(double e0, double e1, double e2)
         {
             e = new double[] { e0, e1, e2 };
         }
@@ -25,42 +25,42 @@ namespace RayTracer
         public double y { get { return e[1]; } }
         public double z { get { return e[2]; } }
 
-        public static vec3 operator -(vec3 v)
+        public static Vec3 operator -(Vec3 v)
         {
-            return new vec3(-v.e[0], -v.e[1], -v.e[2]);
+            return new Vec3(-v.e[0], -v.e[1], -v.e[2]);
         }
 
-        public static vec3 operator +(vec3 v1, vec3 v2)
+        public static Vec3 operator +(Vec3 v1, Vec3 v2)
         {
-            return new vec3(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
+            return new Vec3(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
         }
 
-        public static vec3 operator -(vec3 v1, vec3 v2)
+        public static Vec3 operator -(Vec3 v1, Vec3 v2)
         {
-            return new vec3(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
+            return new Vec3(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
         }
 
-        public static vec3 operator *(vec3 v, double t)
+        public static Vec3 operator *(Vec3 v, double t)
         {
-            return new vec3(v.x * t, v.y * t, v.z * t);
+            return new Vec3(v.x * t, v.y * t, v.z * t);
         }
 
-        public static vec3 operator *(double t, vec3 v)
+        public static Vec3 operator *(double t, Vec3 v)
         {
             return v * t;
         }
 
-        public static vec3 operator /(vec3 v, double t)
+        public static Vec3 operator /(Vec3 v, double t)
         {
             return v * (1 / t);
         }
 
-        public double length()
+        public double Length()
         {
-            return Math.Sqrt(length_squared());
+            return Math.Sqrt(Length_squared());
         }
 
-        public double length_squared()
+        public double Length_squared()
         {
             return x * x + y * y + z * z;
         }
@@ -72,20 +72,20 @@ namespace RayTracer
 
         // vec3 Utility Functions
 
-        public vec3 unit_vector()
+        public Vec3 Unit_vector()
         {
-            vec3 temp = new vec3(x, y, z);
-            return temp / temp.length();
+            Vec3 temp = new Vec3(x, y, z);
+            return temp / temp.Length();
         }
 
-        public double dot(vec3 u, vec3 v)
+        public double Dot(Vec3 v)
         {
-            return u.x * v.x + u.y * v.y + u.z * v.z;
+            return x * v.x + y * v.y + z * v.z;
         }
 
-        public vec3 cross(vec3 u, vec3 v)
+        public Vec3 Cross(Vec3 v)
         {
-            return new vec3(u.y * v.z - u.z * v.y, u.z * v.x - u.x * v.z, u.x * v.y - u.y * v.x);
+            return new Vec3(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);
         }
     }
 }

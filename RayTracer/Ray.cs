@@ -8,15 +8,15 @@ namespace RayTracer
 {
     internal class Ray
     {
-        public vec3 Origin { get; set; }
-        public vec3 Direction { get; set; }
+        public Vec3 Origin { get; set; }
+        public Vec3 Direction { get; set; }
 
-        public Ray(vec3 origin, vec3 direction)
+        public Ray(Vec3 origin, Vec3 direction)
         {
             Origin = origin;
             Direction = direction;
         }
-        public vec3 At(double t)
+        public Vec3 At(double t)
         {
             return Origin + t * Direction;
         }

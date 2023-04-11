@@ -56,9 +56,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Hittable.cs" />
+    <Compile Include="HittableList.cs" />
     <Compile Include="Ray.cs" />
     <Compile Include="Render.cs" />
-    <Compile Include="vec3.cs" />
+    <Compile Include="Sphere.cs" />
+    <Compile Include="Vec3.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
