@@ -17,25 +17,24 @@ namespace RayTracer
 {
     internal class Render
     {
+        readonly Random rnd = new Random(420);
+        
         // Image
         const double aspect_ratio = 16.0 / 9.0;
         const int image_width = 400;
         const int image_height = (int)(image_width / aspect_ratio);
+        const int SamplesPerPixel = 100;
 
         // World
-        static HittableList World;
-        World.Add(new Sphere(new Vec3(0, 0, -1), 0.5));
-        World.Add(new Sphere(new Vec3(0, -100.5, -1), 100));
+        HittableList World = new HittableList();
+        public Render()
+        {
+            World.Add(new Sphere(new Vec3(0, 0, -1), 0.5));
+            World.Add(new Sphere(new Vec3(0, -100.5, -1), 100));
+        }
 
         // Camera
-        static double ViewportHeight = 2.0;
-        static double ViewportWidth = aspect_ratio * ViewportHeight;
-        static double FocalLength = 1.0;
-
-        static Vec3 Origin = new Vec3(0, 0, 0);
-        static Vec3 Horizontal = new Vec3(ViewportWidth, 0, 0);
-        static Vec3 Vertical = new Vec3(0, ViewportHeight, 0);
-        static Vec3 LowerLeftCorner = Origin - Horizontal / 2 - Vertical / 2 - new Vec3(0, 0, FocalLength);
+        Camera Cam = new Camera();
 
         // Other
         public Bitmap Result;
@@ -66,15 +65,19 @@ namespace RayTracer
                 Debug.WriteLine("Scanlines remaining: {0}", y);
                 for (double x = 0; x < image_width; ++x)
                 {
-                    double u = x / (image_width-1);
-                    double v = y / (image_height-1);
-                    Ray r = new Ray(Origin, LowerLeftCorner + u * Horizontal +  v * Vertical - Origin);
-                    Vec3 Pixel_color = Ray_color(r, world);
+                    Vec3 PixelColor = new Vec3(0, 0, 0);
+                    for (int s = 0; s < SamplesPerPixel; ++s)
+                    {
+                        double u = (x + rnd.NextDouble(0.0, 1.0)) / (image_width - 1);
+                        double v = (y + rnd.NextDouble(0.0, 1.0)) / (image_height - 1);
+                        Ray r = Cam.GetRay(u, v);
+                        PixelColor += RayColor(r, World);
+                    }
 
                     image.SetPixel(
                         (int)x,
                         image_height - 1 - (int)y, // flip the image for bitmap
-                        Ray_color_to_pixel(Pixel_color)
+                        RayColorToPixel(PixelColor)
                     );
                 }
             }
@@ -83,9 +86,9 @@ namespace RayTracer
             return image;
         }
 
-        private Vec3 Ray_color(Ray r, Hittable world) {
-            HitRecord rec;
-            if (world.Hit(r, 0, double.MaxValue, rec))
+        private Vec3 RayColor(Ray r, Hittable World) {
+            HitRecord rec = new HitRecord();
+            if (World.Hit(r, 0, double.MaxValue, ref rec))
             {
                 return 0.5 * (rec.Normal + new Vec3(1, 1, 1));
             }
@@ -94,12 +97,22 @@ namespace RayTracer
             return (1.0-t) * new Vec3(1.0, 1.0, 1.0) + t * new Vec3(0.5, 0.7, 1.0);
         }
 
-        private Color Ray_color_to_pixel(Vec3 color)
+        private Color RayColorToPixel(Vec3 color)
         {
+            double R = color.x;
+            double G = color.y;
+            double B = color.z;
+
+            // Divide the color by the number of samples.
+            double scale = 1.0 / SamplesPerPixel;
+            R *= scale;
+            G *= scale;
+            B *= scale;
+
             return Color.FromArgb(
-                (int)(255.999 * color.x),
-                (int)(255.999 * color.y),
-                (int)(255.999 * color.z)
+                (int)(256 * R.Clamp(0, .999)),
+                (int)(256 * G.Clamp(0, .999)),
+                (int)(256 * B.Clamp(0, .999))
             );
         }
 

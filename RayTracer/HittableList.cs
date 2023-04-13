@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,11 +12,6 @@ namespace RayTracer
         // check later for shared pointers
         public List<Hittable> Objects = new List<Hittable> ();
 
-        public HittableList(Hittable obj)
-        {
-            Add(obj);
-        }
-
         public void Clear()
         {
             Objects.Clear();
@@ -26,7 +22,7 @@ namespace RayTracer
             Objects.Add(obj);
         }
 
-        public bool Hit(Ray r, double tMin, double tMax, HitRecord rec)
+        public override bool Hit(Ray r, double tMin, double tMax, ref HitRecord rec)
         {
             HitRecord tempRec = new HitRecord();
             bool hitAnything = false;
@@ -34,7 +30,7 @@ namespace RayTracer
 
             foreach (var obj in Objects)
             {
-                if (obj.Hit(r, tMin, closestSoFar, tempRec))
+                if (obj.Hit(r, tMin, closestSoFar, ref tempRec))
                 {
                     hitAnything = true;
                     closestSoFar = tempRec.T;

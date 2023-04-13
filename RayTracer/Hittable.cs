@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace RayTracer
 {
-    public struct HitRecord
+    class HitRecord
     {
-        Vec3 P;
-        Vec3 Normal;
-        double T;
-        bool FrontFace;
+        public Vec3 P;
+        public Vec3 Normal;
+        public double T;
+        public bool FrontFace;
 
-        void SetFaceNormal(Ray r, Vec3 outwardNormal)
+        public void SetFaceNormal(Ray r, Vec3 outwardNormal)
         {
             FrontFace = r.Direction.Dot(outwardNormal) < 0;
             Normal = FrontFace ? outwardNormal : -outwardNormal;
@@ -22,6 +22,6 @@ namespace RayTracer
 
     internal abstract class Hittable
     {
-        public abstract bool Hit(Ray r, double tMin, double tMax, HitRecord rec);
+        public abstract bool Hit(Ray r, double tMin, double tMax, ref HitRecord rec);
     }
 }
