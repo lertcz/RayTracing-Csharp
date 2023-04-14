@@ -26,17 +26,18 @@ namespace RayTracer
     /// </summary>
     public partial class MainWindow : Window
     {
+        readonly static Render render = new Render();
+
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = render;
         }
         
-        readonly static Render render = new Render();
-
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             render.Render_image = RenderImage;
-            render.Start(); // temporary
+            //render.Start(); // temporary
         }
 
         private void Start_Click(object sender, RoutedEventArgs e)

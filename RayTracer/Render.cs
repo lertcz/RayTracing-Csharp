@@ -1,6 +1,8 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -15,9 +17,21 @@ using System.Windows.Media.Media3D;
 
 namespace RayTracer
 {
-    internal class Render
+    internal class Render : INotifyPropertyChanged
     {
         readonly Random rnd = new Random(420);
+        public event PropertyChangedEventHandler PropertyChanged;
+        private double _renderProgress = 0;
+        public double RenderProgress
+        {
+            get { return _renderProgress; }
+            set
+            {
+                _renderProgress = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RenderProgress"));
+                Debug.WriteLine("Progress {0}", value);
+            }
+        }
         
         // Image
         const double aspect_ratio = 16.0 / 9.0;
@@ -34,7 +48,7 @@ namespace RayTracer
         }
 
         // Camera
-        Camera Cam = new Camera();
+        readonly Camera Cam = new Camera();
 
         // Other
         public Bitmap Result;
@@ -59,10 +73,10 @@ namespace RayTracer
         public Bitmap SingleProcess()
         {
             Bitmap image = new Bitmap(image_width, image_height);
+            RenderProgress = 0;
 
             for (double y = image_height - 1; y >= 0; --y)
             {
-                Debug.WriteLine("Scanlines remaining: {0}", y);
                 for (double x = 0; x < image_width; ++x)
                 {
                     Vec3 PixelColor = new Vec3(0, 0, 0);
@@ -80,8 +94,8 @@ namespace RayTracer
                         RayColorToPixel(PixelColor)
                     );
                 }
+                RenderProgress = (image_height - y) / image_height * 100;
             }
-            Debug.WriteLine("Done");
 
             return image;
         }

@@ -32,33 +32,55 @@
         </Style>
     </Window.Resources>
     <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="8*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="6*" />
-            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
 
         <Border
             Name="RenderWindow"
-            Grid.Column="0"
+            Grid.ColumnSpan="4"
             BorderBrush="#4900ED"
             BorderThickness="2">
             <Image Name="RenderImage" />
             <!--  Stretch="None"  -->
         </Border>
 
-        <StackPanel Grid.Column="2">
-            <Button
-                x:Name="Start"
-                Click="Start_Click"
-                Content="Start" />
-            <Button
-                x:Name="Save"
-                Click="Save_Click"
-                Content="Save" />
-            <Button
-                x:Name="Test"
-                Click="Test_Click"
-                Content="Test" />
-        </StackPanel>
+        <Button
+            x:Name="Start"
+            Grid.Row="1"
+            Grid.Column="0"
+            Click="Start_Click"
+            Content="Start" />
+        <Button
+            x:Name="Save"
+            Grid.Row="1"
+            Grid.Column="1"
+            Click="Save_Click"
+            Content="Save" />
+        <Button
+            x:Name="Test"
+            Grid.Row="1"
+            Grid.Column="2"
+            Click="Test_Click"
+            Content="{Binding RenderProgress}" />
+        <ProgressBar
+            x:Name="RenderProgress"
+            Grid.Row="1"
+            Grid.Column="3"
+            Margin="10"
+            Background="#121212"
+            BorderBrush="#4900ED"
+            BorderThickness="5"
+            Foreground="#4900ED"
+            Maximum="100"
+            Minimum="0"
+            Value="{Binding RenderProgress}" />
     </Grid>
 </Window>
