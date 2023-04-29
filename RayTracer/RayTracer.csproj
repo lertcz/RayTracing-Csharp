@@ -60,6 +60,7 @@
     <Compile Include="ExtensionClasses.cs" />
     <Compile Include="Hittable.cs" />
     <Compile Include="HittableList.cs" />
+    <Compile Include="Material.cs" />
     <Compile Include="Ray.cs" />
     <Compile Include="Render.cs" />
     <Compile Include="Sphere.cs" />

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
@@ -40,6 +41,11 @@ namespace RayTracer
         public static Vec3 operator -(Vec3 v1, Vec3 v2)
         {
             return new Vec3(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
+        }
+
+        public static Vec3 operator *(Vec3 u, Vec3 v)
+        {
+            return new Vec3(u.x * v.x, u.y * v.y, u.z * v.z);
         }
 
         public static Vec3 operator *(Vec3 v, double t)
@@ -120,6 +126,27 @@ namespace RayTracer
                 return in_unit_sphere;
             else
                 return -in_unit_sphere;
+        }
+
+        public bool NearZero()
+        {
+            // Return true if the vector is close to zero in all dimensions.
+            double limit = 1e-8;
+            return (Math.Abs(x) < limit) && (Math.Abs(y) < limit) && (Math.Abs(z) < limit);
+        }
+
+        public static Vec3 Reflect(Vec3 v, Vec3 n)
+        {
+            return v - 2 * v.Dot(n) * n;
+        }
+
+        public static Vec3 Refract(Vec3 uv, Vec3 n, double etaiOverEtat)
+        {
+            double cosTheta = Math.Min(-uv.Dot(n), 1.0);
+            Vec3 rOutPerp = etaiOverEtat * (uv + cosTheta * n);
+            Vec3 rOutParallel = -Math.Sqrt(Math.Abs(1.0 - rOutPerp.LengthSquared())) * n;
+            return rOutPerp + rOutParallel;
+
         }
     }
 }

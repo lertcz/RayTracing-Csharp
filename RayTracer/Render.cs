@@ -36,8 +36,16 @@ namespace RayTracer
         readonly HittableList World = new HittableList();
         public Render()
         {
-            World.Add(new Sphere(new Vec3(0, 0, -1), 0.5));
-            World.Add(new Sphere(new Vec3(0, -100.5, -1), 100));
+            Lambertian ground = new Lambertian(new Vec3(0.8, 0.8, 0.0));
+            Lambertian center = new Lambertian(new Vec3(0.1, 0.2, 0.5));
+            Dielectric left   = new Dielectric(1.5);
+            Metal right       = new Metal(new Vec3(0.8, 0.6, 0.2), 1.0);
+
+            World.Add(new Sphere(new Vec3( 0.0, -100.5, -1.0), 100.0, ground));
+            World.Add(new Sphere(new Vec3( 0.0,    0.0, -1.0),   0.5, center));
+            World.Add(new Sphere(new Vec3(-1.0,    0.0, -1.0),   0.5, left));
+            World.Add(new Sphere(new Vec3(-1.0,    0.0, -1.0),  -0.4, left));
+            World.Add(new Sphere(new Vec3( 1.0,    0.0, -1.0),   0.5, right));
         }
 
         // Camera
@@ -102,10 +110,11 @@ namespace RayTracer
 
             if (World.Hit(r, 0.001, double.MaxValue, ref rec))
             {
-                Vec3 target = rec.P + rec.Normal + Vec3.RandomInUnitSphere();
-                //Vec3 target = rec.P + rec.Normal + Vec3.RandomUnitVector();
-                //Vec3 target = rec.P + Vec3.RandomInHemisphere(rec.Normal);
-                return 0.5 * RayColor(new Ray(rec.P, target - rec.P), World, depth-1);
+                if (rec.Material.Scatter(r, ref rec, out Vec3 colorAttenuation, out Ray scattered))
+                {
+                    return colorAttenuation * RayColor(scattered, World, depth - 1);
+                }
+                return new Vec3(0.0, 0.0, 0.0);
             }
             Vec3 unit_direction = r.Direction.UnitVector();
             double t = 0.5 * (unit_direction.y + 1.0);
