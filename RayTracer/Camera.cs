@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RayTracer
@@ -11,26 +12,45 @@ namespace RayTracer
 
         private readonly Vec3 Origin, Horizontal, Vertical, LowerLeftCorner;
 
-        public Camera(Vec3 lookFrom, Vec3 lookAt, Vec3 vectorUP, double vfov, double aspectRatio)
+        private readonly Vec3 w, u, v;
+        private readonly double lensRadius;
+
+        public Camera(
+            Vec3 lookFrom,
+            Vec3 lookAt,
+            Vec3 vectorUP,
+            double vfov,
+            double aspectRatio,
+            double aperture,
+            double focusDistance
+        )
         {
             double theta = vfov * Math.PI / 180;
             double h = Math.Tan(theta / 2);
             double ViewportHeight = 2.0 * h;
             double ViewportWidth = aspectRatio * ViewportHeight;
 
-            Vec3 w = (lookFrom - lookAt).UnitVector();
-            Vec3 u = vectorUP.Cross(w).UnitVector();
-            Vec3 v = w.Cross(u);
+            w = (lookFrom - lookAt).UnitVector();
+            u = vectorUP.Cross(w).UnitVector();
+            v = w.Cross(u);
 
             Origin = lookFrom;
-            Horizontal = ViewportWidth * u;
-            Vertical = ViewportHeight * v;
-            LowerLeftCorner = Origin - Horizontal / 2 - Vertical / 2 - w;
+            Horizontal = focusDistance * ViewportWidth * u;
+            Vertical   = focusDistance * ViewportHeight * v;
+            LowerLeftCorner = Origin - Horizontal / 2 - Vertical / 2 - focusDistance * w;
+
+            lensRadius = aperture / 2;
         }
 
         public Ray GetRay(double s, double t)
         {
-            return new Ray(Origin, LowerLeftCorner + s * Horizontal + t * Vertical - Origin);
+            Vec3 rd = lensRadius * Vec3.RandomInUnitDisk();
+            Vec3 offset = u * rd.x + v * rd.y;
+
+            return new Ray(
+                Origin + offset,
+                LowerLeftCorner + s * Horizontal + t * Vertical - Origin - offset
+            );
         }
     }
 }

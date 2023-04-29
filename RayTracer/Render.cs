@@ -50,7 +50,14 @@ namespace RayTracer
         }
 
         // Camera
-        Camera Cam = new Camera(new Vec3(-2, 2, 1), new Vec3(0, 0 , -1), new Vec3(0, 1, 0), 20, aspectRatio);
+        readonly static Vec3 LookFrom = new Vec3(3, 3, 2);
+        readonly static Vec3 LookAt = new Vec3(0, 0, -1);
+        readonly static Vec3 VectorUP = new Vec3(0, 1, 0);
+
+        readonly static double distanceToFocus = (LookFrom - LookAt).Length();
+        readonly static double aperture = 2;
+
+        Camera Cam = new Camera(LookFrom, LookAt, VectorUP, 20, aspectRatio, aperture, distanceToFocus);
 
         // Other
         public Bitmap Result;
