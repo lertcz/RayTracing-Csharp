@@ -37,7 +37,7 @@ namespace RayTracer
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             render.Render_image = RenderImage;
-            //render.Start(); // temporary
+            render.Start(); // temporary
         }
 
         private void Start_Click(object sender, RoutedEventArgs e)

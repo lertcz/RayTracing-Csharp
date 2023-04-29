@@ -1,19 +1,11 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using System.Windows.Media.Media3D;
 
 namespace RayTracer
 {
@@ -38,9 +30,10 @@ namespace RayTracer
         const int image_width = 400;
         const int image_height = (int)(image_width / aspect_ratio);
         const int SamplesPerPixel = 100;
+        const int MaxDepth = 50;
 
         // World
-        HittableList World = new HittableList();
+        readonly HittableList World = new HittableList();
         public Render()
         {
             World.Add(new Sphere(new Vec3(0, 0, -1), 0.5));
@@ -85,7 +78,7 @@ namespace RayTracer
                         double u = (x + rnd.NextDouble(0.0, 1.0)) / (image_width - 1);
                         double v = (y + rnd.NextDouble(0.0, 1.0)) / (image_height - 1);
                         Ray r = Cam.GetRay(u, v);
-                        PixelColor += RayColor(r, World);
+                        PixelColor += RayColor(r, World, MaxDepth);
                     }
 
                     image.SetPixel(
@@ -100,13 +93,21 @@ namespace RayTracer
             return image;
         }
 
-        private Vec3 RayColor(Ray r, Hittable World) {
+        private Vec3 RayColor(Ray r, Hittable World, int depth) {
             HitRecord rec = new HitRecord();
-            if (World.Hit(r, 0, double.MaxValue, ref rec))
+
+            // If we've exceeded the ray bounce limit, no more light is gathered.
+            if (depth <= 0)
+                return new Vec3(0.0, 0.0, 0.0);
+
+            if (World.Hit(r, 0.001, double.MaxValue, ref rec))
             {
-                return 0.5 * (rec.Normal + new Vec3(1, 1, 1));
+                Vec3 target = rec.P + rec.Normal + Vec3.RandomInUnitSphere();
+                //Vec3 target = rec.P + rec.Normal + Vec3.RandomUnitVector();
+                //Vec3 target = rec.P + Vec3.RandomInHemisphere(rec.Normal);
+                return 0.5 * RayColor(new Ray(rec.P, target - rec.P), World, depth-1);
             }
-            Vec3 unit_direction = r.Direction.Unit_vector();
+            Vec3 unit_direction = r.Direction.UnitVector();
             double t = 0.5 * (unit_direction.y + 1.0);
             return (1.0-t) * new Vec3(1.0, 1.0, 1.0) + t * new Vec3(0.5, 0.7, 1.0);
         }
@@ -117,11 +118,11 @@ namespace RayTracer
             double G = color.y;
             double B = color.z;
 
-            // Divide the color by the number of samples.
+            // Divide the color by the number of samples and gamma-correct for gamma=2.0.
             double scale = 1.0 / SamplesPerPixel;
-            R *= scale;
-            G *= scale;
-            B *= scale;
+            R = Math.Sqrt(scale * R);
+            G = Math.Sqrt(scale * G);
+            B = Math.Sqrt(scale * B);
 
             return Color.FromArgb(
                 (int)(256 * R.Clamp(0, .999)),

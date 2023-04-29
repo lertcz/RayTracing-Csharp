@@ -20,9 +20,9 @@ namespace RayTracer
         public override bool Hit(Ray r, double tMin, double tMax, ref HitRecord rec)
         {
             Vec3 oc = r.Origin - Center;
-            double a = r.Direction.Length_squared();
+            double a = r.Direction.LengthSquared();
             double halfB = oc.Dot(r.Direction);
-            double c = oc.Length_squared() - Radius * Radius;
+            double c = oc.LengthSquared() - Radius * Radius;
 
             double discriminant = halfB * halfB - a * c;
             if (discriminant < 0) return false;
