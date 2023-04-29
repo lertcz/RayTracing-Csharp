@@ -8,19 +8,29 @@ namespace RayTracer
 {
     internal class Camera
     {
-        const double AspectRatio = 16.0 / 9.0;
-        private static readonly double ViewportHeight = 2.0;
-        private static readonly double ViewportWidth = AspectRatio * ViewportHeight;
-        private static readonly double FocalLength = 1.0;
 
-        private static readonly Vec3 Origin = new Vec3(0, 0, 0);
-        private static readonly Vec3 Horizontal = new Vec3(ViewportWidth, 0, 0);
-        private static readonly Vec3 Vertical = new Vec3(0, ViewportHeight, 0);
-        private static readonly Vec3 LowerLeftCorner = Origin - Horizontal / 2 - Vertical / 2 - new Vec3(0, 0, FocalLength);
+        private readonly Vec3 Origin, Horizontal, Vertical, LowerLeftCorner;
 
-        public Ray GetRay(double u, double v)
+        public Camera(Vec3 lookFrom, Vec3 lookAt, Vec3 vectorUP, double vfov, double aspectRatio)
         {
-            return new Ray(Origin, LowerLeftCorner + u * Horizontal + v * Vertical - Origin);
+            double theta = vfov * Math.PI / 180;
+            double h = Math.Tan(theta / 2);
+            double ViewportHeight = 2.0 * h;
+            double ViewportWidth = aspectRatio * ViewportHeight;
+
+            Vec3 w = (lookFrom - lookAt).UnitVector();
+            Vec3 u = vectorUP.Cross(w).UnitVector();
+            Vec3 v = w.Cross(u);
+
+            Origin = lookFrom;
+            Horizontal = ViewportWidth * u;
+            Vertical = ViewportHeight * v;
+            LowerLeftCorner = Origin - Horizontal / 2 - Vertical / 2 - w;
+        }
+
+        public Ray GetRay(double s, double t)
+        {
+            return new Ray(Origin, LowerLeftCorner + s * Horizontal + t * Vertical - Origin);
         }
     }
 }

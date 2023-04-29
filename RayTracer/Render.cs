@@ -26,14 +26,15 @@ namespace RayTracer
         }
         
         // Image
-        const double aspect_ratio = 16.0 / 9.0;
+        const double aspectRatio = 16.0 / 9.0;
         const int image_width = 400;
-        const int image_height = (int)(image_width / aspect_ratio);
+        const int image_height = (int)(image_width / aspectRatio);
         const int SamplesPerPixel = 100;
         const int MaxDepth = 50;
 
         // World
-        readonly HittableList World = new HittableList();
+        HittableList World = new HittableList();
+
         public Render()
         {
             Lambertian ground = new Lambertian(new Vec3(0.8, 0.8, 0.0));
@@ -49,7 +50,7 @@ namespace RayTracer
         }
 
         // Camera
-        readonly Camera Cam = new Camera();
+        Camera Cam = new Camera(new Vec3(-2, 2, 1), new Vec3(0, 0 , -1), new Vec3(0, 1, 0), 20, aspectRatio);
 
         // Other
         public Bitmap Result;
