@@ -26,36 +26,36 @@ namespace RayTracer
         }
         
         // Image
-        const double aspectRatio = 16.0 / 9.0;
+        const double aspectRatio = 3.0 / 2.0;
         const int image_width = 400;
         const int image_height = (int)(image_width / aspectRatio);
         const int SamplesPerPixel = 100;
         const int MaxDepth = 50;
 
         // World
-        HittableList World = new HittableList();
+        HittableList World = Scenes.Part1RandomFinalScene();
 
-        public Render()
-        {
-            Lambertian ground = new Lambertian(new Vec3(0.8, 0.8, 0.0));
-            Lambertian center = new Lambertian(new Vec3(0.1, 0.2, 0.5));
-            Dielectric left   = new Dielectric(1.5);
-            Metal right       = new Metal(new Vec3(0.8, 0.6, 0.2), 1.0);
+        //public Render()
+        //{
+        //    Lambertian ground = new Lambertian(new Vec3(0.8, 0.8, 0.0));
+        //    Lambertian center = new Lambertian(new Vec3(0.1, 0.2, 0.5));
+        //    Dielectric left   = new Dielectric(1.5);
+        //    Metal right       = new Metal(new Vec3(0.8, 0.6, 0.2), 1.0);
 
-            World.Add(new Sphere(new Vec3( 0.0, -100.5, -1.0), 100.0, ground));
-            World.Add(new Sphere(new Vec3( 0.0,    0.0, -1.0),   0.5, center));
-            World.Add(new Sphere(new Vec3(-1.0,    0.0, -1.0),   0.5, left));
-            World.Add(new Sphere(new Vec3(-1.0,    0.0, -1.0),  -0.4, left));
-            World.Add(new Sphere(new Vec3( 1.0,    0.0, -1.0),   0.5, right));
-        }
+        //    World.Add(new Sphere(new Vec3( 0.0, -100.5, -1.0), 100.0, ground));
+        //    World.Add(new Sphere(new Vec3( 0.0,    0.0, -1.0),   0.5, center));
+        //    World.Add(new Sphere(new Vec3(-1.0,    0.0, -1.0),   0.5, left));
+        //    World.Add(new Sphere(new Vec3(-1.0,    0.0, -1.0),  -0.4, left));
+        //    World.Add(new Sphere(new Vec3( 1.0,    0.0, -1.0),   0.5, right));
+        //}
 
         // Camera
-        readonly static Vec3 LookFrom = new Vec3(3, 3, 2);
-        readonly static Vec3 LookAt = new Vec3(0, 0, -1);
+        readonly static Vec3 LookFrom = new Vec3(13, 2, 3);
+        readonly static Vec3 LookAt = new Vec3(0, 0, 0);
         readonly static Vec3 VectorUP = new Vec3(0, 1, 0);
 
-        readonly static double distanceToFocus = (LookFrom - LookAt).Length();
-        readonly static double aperture = 2;
+        readonly static double distanceToFocus = 10; //(LookFrom - LookAt).Length();
+        readonly static double aperture = .1;
 
         Camera Cam = new Camera(LookFrom, LookAt, VectorUP, 20, aspectRatio, aperture, distanceToFocus);
 

@@ -63,6 +63,7 @@
     <Compile Include="Material.cs" />
     <Compile Include="Ray.cs" />
     <Compile Include="Render.cs" />
+    <Compile Include="Scenes.cs" />
     <Compile Include="Sphere.cs" />
     <Compile Include="Vec3.cs" />
     <Page Include="MainWindow.xaml">
