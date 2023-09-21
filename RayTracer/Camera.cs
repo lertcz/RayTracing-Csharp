@@ -9,11 +9,13 @@ namespace RayTracer
 {
     internal class Camera
     {
+        private readonly static Random random = new Random();
 
         private readonly Vec3 Origin, Horizontal, Vertical, LowerLeftCorner;
 
         private readonly Vec3 w, u, v;
         private readonly double lensRadius;
+        private readonly double time0, time1; // shutter open/close times
 
         public Camera(
             Vec3 lookFrom,
@@ -22,7 +24,9 @@ namespace RayTracer
             double vfov,
             double aspectRatio,
             double aperture,
-            double focusDistance
+            double focusDistance,
+            double _time0 = 0.0,
+            double _time1 = 0.0
         )
         {
             double theta = vfov * Math.PI / 180;
@@ -40,6 +44,8 @@ namespace RayTracer
             LowerLeftCorner = Origin - Horizontal / 2 - Vertical / 2 - focusDistance * w;
 
             lensRadius = aperture / 2;
+            time0 = _time0;
+            time1 = _time1;
         }
 
         public Ray GetRay(double s, double t)
@@ -49,7 +55,8 @@ namespace RayTracer
 
             return new Ray(
                 Origin + offset,
-                LowerLeftCorner + s * Horizontal + t * Vertical - Origin - offset
+                LowerLeftCorner + s * Horizontal + t * Vertical - Origin - offset,
+                random.NextDouble(time0, time1)
             );
         }
     }

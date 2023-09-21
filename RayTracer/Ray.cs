@@ -10,11 +10,13 @@ namespace RayTracer
     {
         public Vec3 Origin { get; set; }
         public Vec3 Direction { get; set; }
+        public double Time { get; set; }
 
-        public Ray(Vec3 origin, Vec3 direction)
+        public Ray(Vec3 origin, Vec3 direction, double time = 0.0)
         {
             Origin = origin;
             Direction = direction;
+            Time = time;
         }
         public Vec3 At(double t)
         {

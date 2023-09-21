@@ -5,6 +5,8 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Media.Imaging;
 
 namespace RayTracer
@@ -29,11 +31,11 @@ namespace RayTracer
         const double aspectRatio = 3.0 / 2.0;
         const int image_width = 400;
         const int image_height = (int)(image_width / aspectRatio);
-        const int SamplesPerPixel = 100;
-        const int MaxDepth = 50;
+        const int SamplesPerPixel = 5; //100
+        const int MaxDepth = 3; // 50
 
         // World
-        HittableList World = Scenes.Part1RandomFinalScene();
+        readonly HittableList World = Scenes.Part1RandomFinalScene();
 
         //public Render()
         //{
@@ -56,8 +58,7 @@ namespace RayTracer
 
         readonly static double distanceToFocus = 10; //(LookFrom - LookAt).Length();
         readonly static double aperture = .1;
-
-        Camera Cam = new Camera(LookFrom, LookAt, VectorUP, 20, aspectRatio, aperture, distanceToFocus);
+        readonly Camera Cam = new Camera(LookFrom, LookAt, VectorUP, 20, aspectRatio, aperture, distanceToFocus);
 
         // Other
         public Bitmap Result;
@@ -71,7 +72,8 @@ namespace RayTracer
                 Bitmap image = new Bitmap(image_width, image_height);
 
                 // Render
-                Bitmap img = SingleProcess();
+                //Bitmap img = SingleProcess();
+                Bitmap img = MultiThread();
 
                 Render_image.Dispatcher.Invoke(() => Render_image.Source = BitmapToImageSource(img));
                 Result = img; // save Bitmap in a variable for saving into a file
@@ -104,6 +106,70 @@ namespace RayTracer
                     );
                 }
                 RenderProgress = (image_height - y) / image_height * 100;
+            }
+
+            return image;
+        }
+
+        public Bitmap MultiThread()
+        {
+            double CompletedRows = 0;
+            RenderProgress = 0;
+
+            Task[] tasks = new Task[image_height];
+            Tuple<int, int, Color>[,] wholeImage = new Tuple<int, int, Color>[image_height, image_width];
+
+            for (int row = image_height - 1; row >= 0; --row)
+            {
+                double y = row;
+                tasks[row] = new Task(() =>
+                {
+                    for (double x = 0; x < image_width; ++x)
+                    {
+                        Vec3 PixelColor = new Vec3(0, 0, 0);
+                        for (int s = 0; s < SamplesPerPixel; ++s)
+                        {
+                            double u = (x + rnd.NextDouble(0.0, 1.0)) / (image_width - 1);
+                            double v = (y + rnd.NextDouble(0.0, 1.0)) / (image_height - 1);
+                            Ray r = Cam.GetRay(u, v);
+                            PixelColor += RayColor(r, World, MaxDepth);
+                        }
+
+                        // save to array
+                        wholeImage[(int)y, (int)x] = new Tuple<int, int , Color>
+                        (
+                            (int)x,
+                            image_height - 1 - (int)y, // flip the image for bitmap
+                            RayColorToPixel(PixelColor)
+                        );
+                    }
+
+                    CompletedRows++;
+                    RenderProgress = Math.Round(CompletedRows / image_height * 100, 2);
+                });
+            }
+
+            foreach (Task task in tasks)
+            {
+                task.Start();
+            }
+
+            // wait for the tasks
+            Task.WaitAll(tasks);
+            Debug.WriteLine("DONE");
+
+            Bitmap image = new Bitmap(image_width, image_height);
+
+            for (int y = 0; y < image_height; y++)
+            {
+                for(int x = 0; x < image_width; x++)
+                {
+                    image.SetPixel(
+                        wholeImage[y, x].Item1,
+                        wholeImage[y, x].Item2,
+                        wholeImage[y, x].Item3
+                    );
+                }
             }
 
             return image;
