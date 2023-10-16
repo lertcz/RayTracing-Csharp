@@ -4,10 +4,12 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace RayTracer
 {
@@ -23,16 +25,16 @@ namespace RayTracer
             {
                 _renderProgress = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RenderProgress"));
-                Debug.WriteLine("Progress {0}", value);
+                //Debug.WriteLine("Progress {0}", value);
             }
         }
         
         // Image
         const double aspectRatio = 3.0 / 2.0;
-        const int image_width = 400;
+        const int image_width = 300; // 400
         const int image_height = (int)(image_width / aspectRatio);
         const int SamplesPerPixel = 5; //100
-        const int MaxDepth = 3; // 50
+        const int MaxDepth = 5; // 50 (min - 2 albedo, 3 metal, 5 glass)
 
         // World
         readonly HittableList World = Scenes.Part1RandomFinalScene();
@@ -105,7 +107,7 @@ namespace RayTracer
                         RayColorToPixel(PixelColor)
                     );
                 }
-                RenderProgress = (image_height - y) / image_height * 100;
+                RenderProgress = Math.Round((image_height - y) / image_height * 100, 2);
             }
 
             return image;
@@ -113,20 +115,18 @@ namespace RayTracer
 
         public Bitmap MultiThread()
         {
-            double CompletedRows = 0;
+            Color[,] wholeImage = new Color[image_height, image_width];
+            double CompletedRows = 1;
             RenderProgress = 0;
 
-            Task[] tasks = new Task[image_height];
-            Tuple<int, int, Color>[,] wholeImage = new Tuple<int, int, Color>[image_height, image_width];
-
-            for (int row = image_height - 1; row >= 0; --row)
+            Parallel.For(0, image_height - 1, y => // for (double y = 0; y < image_height; ++y)
             {
-                double y = row;
-                tasks[row] = new Task(() =>
+                try
                 {
-                    for (double x = 0; x < image_width; ++x)
+                    for (int x = 0; x < image_width; ++x)
                     {
                         Vec3 PixelColor = new Vec3(0, 0, 0);
+
                         for (int s = 0; s < SamplesPerPixel; ++s)
                         {
                             double u = (x + rnd.NextDouble(0.0, 1.0)) / (image_width - 1);
@@ -136,39 +136,28 @@ namespace RayTracer
                         }
 
                         // save to array
-                        wholeImage[(int)y, (int)x] = new Tuple<int, int , Color>
-                        (
-                            (int)x,
-                            image_height - 1 - (int)y, // flip the image for bitmap
-                            RayColorToPixel(PixelColor)
-                        );
+                        wholeImage[image_height - 1 - y, x] = RayColorToPixel(PixelColor);
                     }
-
                     CompletedRows++;
                     RenderProgress = Math.Round(CompletedRows / image_height * 100, 2);
-                });
-            }
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            });
 
-            foreach (Task task in tasks)
-            {
-                task.Start();
-            }
-
-            // wait for the tasks
-            Task.WaitAll(tasks);
             Debug.WriteLine("DONE");
+
 
             Bitmap image = new Bitmap(image_width, image_height);
 
+            // transfer the saved pixel data onto a Bitmap 
             for (int y = 0; y < image_height; y++)
             {
-                for(int x = 0; x < image_width; x++)
+                for (int x = 0; x < image_width; x++)
                 {
-                    image.SetPixel(
-                        wholeImage[y, x].Item1,
-                        wholeImage[y, x].Item2,
-                        wholeImage[y, x].Item3
-                    );
+                    image.SetPixel(x, y, wholeImage[y, x]);
                 }
             }
 
