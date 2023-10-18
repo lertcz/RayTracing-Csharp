@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
@@ -28,13 +30,13 @@ namespace RayTracer
                 //Debug.WriteLine("Progress {0}", value);
             }
         }
-        
+
         // Image
         const double aspectRatio = 3.0 / 2.0;
-        const int image_width = 300; // 400
+        const int image_width = 400; // 400
         const int image_height = (int)(image_width / aspectRatio);
-        const int SamplesPerPixel = 5; //100
-        const int MaxDepth = 5; // 50 (min - 2 albedo, 3 metal, 5 glass)
+        const int SamplesPerPixel = 100; //100
+        const int MaxDepth = 50; // 50 (min - 2 albedo, 3 metal, 5 glass)
 
         // World
         readonly HittableList World = Scenes.Part1RandomFinalScene();
@@ -69,13 +71,15 @@ namespace RayTracer
 
         public void Start()
         {
+            Debug.WriteLine("Render start");
             new Thread(() =>
             {
                 Bitmap image = new Bitmap(image_width, image_height);
 
                 // Render
                 //Bitmap img = SingleProcess();
-                Bitmap img = MultiThread();
+                //Bitmap img = MultiThread();
+                Bitmap img = MultiThread2();
 
                 Render_image.Dispatcher.Invoke(() => Render_image.Source = BitmapToImageSource(img));
                 Result = img; // save Bitmap in a variable for saving into a file
@@ -113,38 +117,98 @@ namespace RayTracer
             return image;
         }
 
+
+        public Bitmap MultiThread2()
+        {
+            var pixels = new ConcurrentStack<Tuple<int, int, Color>>(new Tuple<int, int, Color>[image_height*image_width]);
+            
+
+            double CompletedRows = 1;
+            RenderProgress = 0;
+
+
+            //var options = new ParallelOptions();
+            //options.MaxDegreeOfParallelism = 10;
+            Parallel.For(0, image_height, y => // for (double y = 0; y < image_height; ++y)
+            {
+
+                var localPixels = new Tuple<int, int, Color>[image_width];
+                for (int x = 0; x < image_width; ++x)
+                {
+                    Vec3 PixelColor = new Vec3(0, 0, 0);
+
+                    for (int s = 0; s < SamplesPerPixel; ++s)
+                    {
+                        double u = (x + rnd.NextDouble(0.0, 1.0)) / (image_width - 1);
+                        double v = (y + rnd.NextDouble(0.0, 1.0)) / (image_height - 1);
+                        Ray r = Cam.GetRay(u, v);
+                        PixelColor += RayColor(r, World, MaxDepth);
+                    }
+                    localPixels[x] = new Tuple<int, int, Color>(image_height - 1 - y, x, RayColorToPixel(PixelColor));
+                }
+
+                pixels.PushRange(localPixels);
+
+                CompletedRows++;
+                RenderProgress = Math.Round(CompletedRows / image_height * 100, 2);
+
+            });
+
+            Debug.WriteLine("DONE");
+
+            Bitmap image = new Bitmap(image_width, image_height);
+
+            while ( ! pixels.IsEmpty)
+            {
+
+                if (pixels.TryPop(out var pixel))
+                {
+                    if (pixel == null)
+                    {
+                        break;
+                    }
+                    image.SetPixel(pixel.Item2, pixel.Item1, pixel.Item3);
+                }
+            }
+            
+
+            return image;
+        }
+
+
+
         public Bitmap MultiThread()
         {
             Color[,] wholeImage = new Color[image_height, image_width];
             double CompletedRows = 1;
             RenderProgress = 0;
 
-            Parallel.For(0, image_height - 1, y => // for (double y = 0; y < image_height; ++y)
+
+            var options = new ParallelOptions();
+            options.MaxDegreeOfParallelism = 8;
+            Parallel.For(0, image_height - 1, options, y => // for (double y = 0; y < image_height; ++y)
             {
-                try
+
+
+                for (int x = 0; x < image_width; ++x)
                 {
-                    for (int x = 0; x < image_width; ++x)
+                    Vec3 PixelColor = new Vec3(0, 0, 0);
+
+                    for (int s = 0; s < SamplesPerPixel; ++s)
                     {
-                        Vec3 PixelColor = new Vec3(0, 0, 0);
-
-                        for (int s = 0; s < SamplesPerPixel; ++s)
-                        {
-                            double u = (x + rnd.NextDouble(0.0, 1.0)) / (image_width - 1);
-                            double v = (y + rnd.NextDouble(0.0, 1.0)) / (image_height - 1);
-                            Ray r = Cam.GetRay(u, v);
-                            PixelColor += RayColor(r, World, MaxDepth);
-                        }
-
-                        // save to array
-                        wholeImage[image_height - 1 - y, x] = RayColorToPixel(PixelColor);
+                        double u = (x + rnd.NextDouble(0.0, 1.0)) / (image_width - 1);
+                        double v = (y + rnd.NextDouble(0.0, 1.0)) / (image_height - 1);
+                        Ray r = Cam.GetRay(u, v);
+                        PixelColor += RayColor(r, World, MaxDepth);
                     }
-                    CompletedRows++;
-                    RenderProgress = Math.Round(CompletedRows / image_height * 100, 2);
+
+                    // save to array
+                    wholeImage[image_height - 1 - y, x] = RayColorToPixel(PixelColor);
                 }
-                catch(Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
+
+                CompletedRows++;
+                RenderProgress = Math.Round(CompletedRows / image_height * 100, 2);
+
             });
 
             Debug.WriteLine("DONE");
@@ -164,7 +228,10 @@ namespace RayTracer
             return image;
         }
 
-        private Vec3 RayColor(Ray r, Hittable World, int depth) {
+        /*
+        private Vec3 RayColor(Ray r, Hittable World, int depth)
+        {
+            Debug.WriteLine($"RayColor {depth}");
             HitRecord rec = new HitRecord();
 
             // If we've exceeded the ray bounce limit, no more light is gathered.
@@ -181,7 +248,44 @@ namespace RayTracer
             }
             Vec3 unit_direction = r.Direction.UnitVector();
             double t = 0.5 * (unit_direction.y + 1.0);
-            return (1.0-t) * new Vec3(1.0, 1.0, 1.0) + t * new Vec3(0.5, 0.7, 1.0);
+            return (1.0 - t) * new Vec3(1.0, 1.0, 1.0) + t * new Vec3(0.5, 0.7, 1.0);
+        }*/
+
+        private Vec3 RayColor(Ray r, Hittable World, int maxDepth)
+        {
+
+            var vec3one = new Vec3(1.0, 1.0, 1.0);
+            var vec3numbers = new Vec3(0.5, 0.7, 1.0);
+
+            Vec3 color = new Vec3(1.0, 1.0, 1.0);
+            Ray currentRay = r;
+
+            for (int depth = maxDepth; depth > 0; depth--)
+            {
+                HitRecord rec = new HitRecord();
+
+                if (World.Hit(currentRay, 0.001, double.MaxValue, ref rec))
+                {
+                    if (rec.Material.Scatter(currentRay, ref rec, out Vec3 colorAttenuation, out Ray scattered))
+                    {
+                        color *= colorAttenuation;
+                        currentRay = scattered;
+                    }
+                    else
+                    {
+                        return new Vec3(0.0,0.0,0.0);
+                    }
+                }
+                else
+                {
+                    Vec3 unitDirection = currentRay.Direction.UnitVector();
+                    double t = 0.5 * (unitDirection.y + 1.0);
+                    color *= (1.0 - t) * vec3one + t * vec3numbers;
+                    break;
+                }
+            }
+
+            return color;
         }
 
         private Color RayColorToPixel(Vec3 color)
@@ -218,7 +322,7 @@ namespace RayTracer
                 return bitmapimage;
             }
         }
-    
+
         private Bitmap StackBitmaps(List<Bitmap> Images)
         {
             Int32 width = image_width;

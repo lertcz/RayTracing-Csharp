@@ -105,6 +105,7 @@ namespace RayTracer
             return new Vec3(random.NextDouble(min, max), random.NextDouble(min, max), random.NextDouble(min, max));
         }
 
+        /*
         public static Vec3 RandomInUnitSphere()
         {
             while (true)
@@ -113,6 +114,18 @@ namespace RayTracer
                 if (point.LengthSquared() >= 1) continue;
                 return point;
             }
+        }*/
+        public static Vec3 RandomInUnitSphere()
+        {
+            double u = 2.0 * random.NextDouble() - 1.0; // Random value in the range [-1, 1]
+            double theta = 2.0 * Math.PI * random.NextDouble(); // Random angle in the range [0, 2π]
+            double r = Math.Sqrt(1.0 - u * u); // Calculate the radial distance
+
+            double x = r * Math.Cos(theta);
+            double y = r * Math.Sin(theta);
+            double z = u;
+
+            return new Vec3(x, y, z);
         }
 
         public static Vec3 RandomUnitVector()
@@ -149,7 +162,7 @@ namespace RayTracer
 
         }
 
-        public static Vec3 RandomInUnitDisk()
+        /*public static Vec3 RandomInUnitDisk()
         {
             while (true)
             {
@@ -157,6 +170,13 @@ namespace RayTracer
                 if (p.Length() >= 1) continue;
                 return p;
             }
+        }*/
+
+        public static Vec3 RandomInUnitDisk()
+        {
+            double radius = Math.Sqrt(random.NextDouble());
+            double theta = 2.0 * Math.PI * random.NextDouble();
+            return new Vec3(radius * Math.Cos(theta), radius * Math.Sin(theta), 0);
         }
     }
 }
