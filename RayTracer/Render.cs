@@ -32,11 +32,11 @@ namespace RayTracer
         }
 
         // Image
-        const double aspectRatio = 3.0 / 2.0;
-        const int image_width = 400; // 400
+        const float aspectRatio = 3.0f / 2.0f;
+        const int image_width = 200; // 400
         const int image_height = (int)(image_width / aspectRatio);
-        const int SamplesPerPixel = 100; //100
-        const int MaxDepth = 50; // 50 (min - 2 albedo, 3 metal, 5 glass)
+        const int SamplesPerPixel = 1; //100
+        const int MaxDepth = 5; // 50 (min - 2 albedo, 3 metal, 5 glass)
 
         // World
         readonly HittableList World = Scenes.Part1RandomFinalScene();
@@ -60,8 +60,8 @@ namespace RayTracer
         readonly static Vec3 LookAt = new Vec3(0, 0, 0);
         readonly static Vec3 VectorUP = new Vec3(0, 1, 0);
 
-        readonly static double distanceToFocus = 10; //(LookFrom - LookAt).Length();
-        readonly static double aperture = .1;
+        readonly static float distanceToFocus = 10f; //(LookFrom - LookAt).Length();
+        readonly static float aperture = 0.1f;
         readonly Camera Cam = new Camera(LookFrom, LookAt, VectorUP, 20, aspectRatio, aperture, distanceToFocus);
 
         // Other
@@ -78,8 +78,7 @@ namespace RayTracer
 
                 // Render
                 //Bitmap img = SingleProcess();
-                //Bitmap img = MultiThread();
-                Bitmap img = MultiThread2();
+                Bitmap img = MultiThread();
 
                 Render_image.Dispatcher.Invoke(() => Render_image.Source = BitmapToImageSource(img));
                 Result = img; // save Bitmap in a variable for saving into a file
@@ -118,7 +117,7 @@ namespace RayTracer
         }
 
 
-        public Bitmap MultiThread2()
+        public Bitmap MultiThread()
         {
             var pixels = new ConcurrentStack<Tuple<int, int, Color>>(new Tuple<int, int, Color>[image_height*image_width]);
             
@@ -175,63 +174,8 @@ namespace RayTracer
             return image;
         }
 
-
-
-        public Bitmap MultiThread()
-        {
-            Color[,] wholeImage = new Color[image_height, image_width];
-            double CompletedRows = 1;
-            RenderProgress = 0;
-
-
-            var options = new ParallelOptions();
-            options.MaxDegreeOfParallelism = 8;
-            Parallel.For(0, image_height - 1, options, y => // for (double y = 0; y < image_height; ++y)
-            {
-
-
-                for (int x = 0; x < image_width; ++x)
-                {
-                    Vec3 PixelColor = new Vec3(0, 0, 0);
-
-                    for (int s = 0; s < SamplesPerPixel; ++s)
-                    {
-                        double u = (x + rnd.NextDouble(0.0, 1.0)) / (image_width - 1);
-                        double v = (y + rnd.NextDouble(0.0, 1.0)) / (image_height - 1);
-                        Ray r = Cam.GetRay(u, v);
-                        PixelColor += RayColor(r, World, MaxDepth);
-                    }
-
-                    // save to array
-                    wholeImage[image_height - 1 - y, x] = RayColorToPixel(PixelColor);
-                }
-
-                CompletedRows++;
-                RenderProgress = Math.Round(CompletedRows / image_height * 100, 2);
-
-            });
-
-            Debug.WriteLine("DONE");
-
-
-            Bitmap image = new Bitmap(image_width, image_height);
-
-            // transfer the saved pixel data onto a Bitmap 
-            for (int y = 0; y < image_height; y++)
-            {
-                for (int x = 0; x < image_width; x++)
-                {
-                    image.SetPixel(x, y, wholeImage[y, x]);
-                }
-            }
-
-            return image;
-        }
-
-        /*
         private Vec3 RayColor(Ray r, Hittable World, int depth)
         {
-            Debug.WriteLine($"RayColor {depth}");
             HitRecord rec = new HitRecord();
 
             // If we've exceeded the ray bounce limit, no more light is gathered.
@@ -249,15 +193,15 @@ namespace RayTracer
             Vec3 unit_direction = r.Direction.UnitVector();
             double t = 0.5 * (unit_direction.y + 1.0);
             return (1.0 - t) * new Vec3(1.0, 1.0, 1.0) + t * new Vec3(0.5, 0.7, 1.0);
-        }*/
+        }
 
-        private Vec3 RayColor(Ray r, Hittable World, int maxDepth)
+        /*private Vec3 RayColor(Ray r, Hittable World, int maxDepth) // sample glitch
         {
 
             var vec3one = new Vec3(1.0, 1.0, 1.0);
             var vec3numbers = new Vec3(0.5, 0.7, 1.0);
 
-            Vec3 color = new Vec3(1.0, 1.0, 1.0);
+            Vec3 color = new Vec3(1.0, 1.0, 1.0); // Initialize with the background color
             Ray currentRay = r;
 
             for (int depth = maxDepth; depth > 0; depth--)
@@ -273,7 +217,7 @@ namespace RayTracer
                     }
                     else
                     {
-                        return new Vec3(0.0,0.0,0.0);
+                        return new Vec3(0.0, 0.0, 0.0);
                     }
                 }
                 else
@@ -286,7 +230,7 @@ namespace RayTracer
             }
 
             return color;
-        }
+        }*/
 
         private Color RayColorToPixel(Vec3 color)
         {
