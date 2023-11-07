@@ -27,5 +27,33 @@ namespace RayTracer
         {
             return Center0 + ((time - Time0) / (Time1 - Time0)) * (Center1 - Center0);
         }
+
+        public override bool Hit(Ray r, double tMin, double tMax, ref HitRecord rec)
+        {
+            Vec3 oc = r.Origin - Center(r.Time);
+            double a = r.Direction.LengthSquared();
+            double halfB = oc.Dot(r.Direction);
+            double c = oc.LengthSquared() - Radius * Radius;
+
+            double discriminant = halfB * halfB - a * c;
+            if (discriminant < 0) return false;
+            double sqrtD = Math.Sqrt(discriminant);
+
+            // Find the nearest root that lies in the acceptable range
+            double root = (-halfB - sqrtD) / a;
+            if (root < tMin || tMax < root)
+            {
+                root = (-halfB + sqrtD) / a;
+                if (root < tMin || tMax < root) return false;
+            }
+
+            rec.T = root;
+            rec.P = r.At(rec.T);
+            Vec3 outwardNormal = (rec.P - Center(r.Time)) / Radius;
+            rec.SetFaceNormal(r, outwardNormal);
+            rec.Material = Material;
+
+            return true;
+        }
     }
 }

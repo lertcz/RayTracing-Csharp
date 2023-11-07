@@ -32,14 +32,16 @@ namespace RayTracer
         }
 
         // Image
-        const float aspectRatio = 3.0f / 2.0f;
+        const float aspectRatio = 16.0f / 9.0f;
         const int image_width = 200; // 400
         const int image_height = (int)(image_width / aspectRatio);
-        const int SamplesPerPixel = 1; //100
-        const int MaxDepth = 5; // 50 (min - 2 albedo, 3 metal, 5 glass)
+        const int SamplesPerPixel = 25 ; //100
+        // 50 (min - 2 albedo, 3 metal, 5 glass) 
+        const int MaxDepth = 5; // Maximum number of ray bounces into the scene
 
-        // World
-        readonly HittableList World = Scenes.Part1RandomFinalScene();
+        // Scene
+        //readonly HittableList World = Scenes.Part1RandomFinalScene();
+        readonly HittableList World = Scenes.MotionBlurScene();
 
         //public Render()
         //{
@@ -62,7 +64,7 @@ namespace RayTracer
 
         readonly static float distanceToFocus = 10f; //(LookFrom - LookAt).Length();
         readonly static float aperture = 0.1f;
-        readonly Camera Cam = new Camera(LookFrom, LookAt, VectorUP, 20, aspectRatio, aperture, distanceToFocus);
+        readonly Camera Cam = new Camera(LookFrom, LookAt, VectorUP, 20, aspectRatio, aperture, distanceToFocus, 0, 1);
 
         // Other
         public Bitmap Result;
@@ -115,7 +117,6 @@ namespace RayTracer
 
             return image;
         }
-
 
         public Bitmap MultiThread()
         {

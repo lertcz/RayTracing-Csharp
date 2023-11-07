@@ -28,7 +28,7 @@ namespace RayTracer
             if (scatterDirection.NearZero())
                 scatterDirection = rec.Normal;
 
-            scattered = new Ray(rec.P, scatterDirection);
+            scattered = new Ray(rec.P, scatterDirection, r.Time);
             colorAttenuation = Albedo;
             return true;
         }
@@ -48,7 +48,7 @@ namespace RayTracer
         public override bool Scatter(Ray r, ref HitRecord rec, out Vec3 colorAttenuation, out Ray scattered)
         {
             Vec3 reflected = Vec3.Reflect(r.Direction.UnitVector(), rec.Normal);
-            scattered = new Ray(rec.P, reflected + Fuzz * Vec3.RandomInUnitSphere());
+            scattered = new Ray(rec.P, reflected + Fuzz * Vec3.RandomInUnitSphere(), r.Time);
             colorAttenuation = Albedo;
             return scattered.Direction.Dot(rec.Normal) > 0;
         }
@@ -81,7 +81,7 @@ namespace RayTracer
             else
                 direction = Vec3.Refract(unitDirection, rec.Normal, refractionRatio);
 
-            scattered = new Ray(rec.P, direction);
+            scattered = new Ray(rec.P, direction, r.Time);
             return true;
         }
 
