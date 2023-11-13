@@ -63,6 +63,7 @@
     <Compile Include="Interval.cs" />
     <Compile Include="Material.cs" />
     <Compile Include="MovingSphere.cs" />
+    <Compile Include="Perlin.cs" />
     <Compile Include="Ray.cs" />
     <Compile Include="Render.cs" />
     <Compile Include="Scenes.cs" />

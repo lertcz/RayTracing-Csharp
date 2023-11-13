@@ -5,6 +5,7 @@ using System.Management.Instrumentation;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 
 namespace RayTracer
 {
@@ -104,6 +105,19 @@ namespace RayTracer
             World.Add(new Sphere(new Vec3(4, 1, 0), 1, new Metal(new Vec3(.7, .6, .5), 0)));
 
             return World;
+        }
+    
+        public static HittableList TwoSPheres()
+        {
+            HittableList Objects = new HittableList();
+
+            Vec3 color1 = new Vec3(.2, .3, .1); Vec3 color2 = new Vec3(.9, .9, .9);
+            Texture checker = new CheckerTexture(color1, color2);
+
+            Objects.Add(new Sphere(new Vec3(0, -10, 0), 10, new Lambertian(checker)));
+            Objects.Add(new Sphere(new Vec3(0, 10, 0), 10, new Lambertian(checker)));
+
+            return Objects;
         }
     }
 }
