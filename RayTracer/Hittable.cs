@@ -12,6 +12,8 @@ namespace RayTracer
         public Vec3 Normal;
         public Material Material;
         public double T;
+        public double U;
+        public double V;
         public bool FrontFace;
 
         public void SetFaceNormal(Ray r, Vec3 outwardNormal)

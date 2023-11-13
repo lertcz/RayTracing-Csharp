@@ -15,9 +15,16 @@ namespace RayTracer
     class Lambertian : Material
     {
         Vec3 Albedo { get; set; }
-        public Lambertian(Vec3 color)
+        CheckerTexture AlbedoChecker { get; set; }
+
+        public Lambertian(Vec3 texture)
         {
-            Albedo = color;
+            Albedo = texture;
+        }
+
+        public Lambertian(CheckerTexture texture)
+        {
+            AlbedoChecker = texture;
         }
 
         public override bool Scatter(Ray r, ref HitRecord rec, out Vec3 colorAttenuation, out Ray scattered)
@@ -29,7 +36,18 @@ namespace RayTracer
                 scatterDirection = rec.Normal;
 
             scattered = new Ray(rec.P, scatterDirection, r.Time);
-            colorAttenuation = Albedo;
+
+            // look into it | not nice code
+
+            if (AlbedoChecker != null)
+            {
+                colorAttenuation = AlbedoChecker.Value(rec.U, rec.V, rec.P);
+            }
+            else // solid color
+            {
+                colorAttenuation = Albedo;
+            }
+
             return true;
         }
     }

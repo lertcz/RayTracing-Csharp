@@ -40,8 +40,8 @@ namespace RayTracer
         const int MaxDepth = 5; // Maximum number of ray bounces into the scene
 
         // Scene
-        //readonly HittableList World = Scenes.Part1RandomFinalScene();
-        readonly HittableList World = Scenes.MotionBlurScene();
+        readonly HittableList World = Scenes.Part1RandomFinalScene();
+        //readonly HittableList World = Scenes.MotionBlurScene();
 
         //public Render()
         //{

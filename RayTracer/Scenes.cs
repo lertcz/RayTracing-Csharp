@@ -15,8 +15,12 @@ namespace RayTracer
         {
             HittableList World = new HittableList();
 
-            Lambertian groundMaterial = new Lambertian(new Vec3(.5, .5, .5));
-            World.Add(new Sphere(new Vec3(0, -1000, 0), 1000, groundMaterial));
+            //Lambertian groundMaterial = new Lambertian(new Vec3(.5, .5, .5));
+            //World.Add(new Sphere(new Vec3(0, -1000, 0), 1000, groundMaterial));
+
+            Vec3 color1 = new Vec3(.2, .3, .1); Vec3 color2 = new Vec3(.9, .9, .9);
+            CheckerTexture checker = new CheckerTexture(color1, color2);
+            World.Add(new Sphere(new Vec3(0, -1000, 0), 1000, new Lambertian(checker)));
 
             for (int a = -11; a < 11; a++)
             {

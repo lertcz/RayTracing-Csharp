@@ -67,6 +67,7 @@
     <Compile Include="Render.cs" />
     <Compile Include="Scenes.cs" />
     <Compile Include="Sphere.cs" />
+    <Compile Include="Texture.cs" />
     <Compile Include="Vec3.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
