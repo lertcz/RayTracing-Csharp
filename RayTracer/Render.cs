@@ -35,9 +35,9 @@ namespace RayTracer
         const float aspectRatio = 16.0f / 9.0f;
         const int image_width = 400; // 400
         const int image_height = (int)(image_width / aspectRatio);
-        const int SamplesPerPixel = 25; //100
+        const int SamplesPerPixel = 50; //100
         // 50 (min - 2 albedo, 3 metal, 5 glass) 
-        const int MaxDepth = 15; // Maximum number of ray bounces into the scene
+        const int MaxDepth = 20; // Maximum number of ray bounces into the scene
 
         // Camera Setup
         static Vec3 LookFrom, LookAt;

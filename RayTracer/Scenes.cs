@@ -124,7 +124,7 @@ namespace RayTracer
         {
             HittableList Objects = new HittableList();
 
-            Texture perlinTexture = new NoiseTexture();
+            Texture perlinTexture = new NoiseTexture(4);
 
             Objects.Add(new Sphere(new Vec3(0, -1000, 0), 1000, new Lambertian(perlinTexture)));
             Objects.Add(new Sphere(new Vec3(0, 2, 0), 2, new Lambertian(perlinTexture)));

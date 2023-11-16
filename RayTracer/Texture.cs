@@ -57,9 +57,15 @@ namespace RayTracer
     class NoiseTexture : Texture
     {
         readonly Perlin noise = new Perlin();
+        readonly double Scale;
+
+        public NoiseTexture(double scale = 1)
+        {
+            Scale = scale;
+        }
         public override Vec3 Value(double u, double v, Vec3 p)
         {
-            return new Vec3(1, 1, 1) * noise.Noise(p);
+            return new Vec3(1, 1, 1) * noise.Noise(Scale * p);
         }
     }
 }

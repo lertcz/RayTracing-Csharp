@@ -105,16 +105,6 @@ namespace RayTracer
             return new Vec3(random.NextDouble(min, max), random.NextDouble(min, max), random.NextDouble(min, max));
         }
 
-        /*
-        public static Vec3 RandomInUnitSphere()
-        {
-            while (true)
-            {
-                Vec3 point = Random(-1, 1);
-                if (point.LengthSquared() >= 1) continue;
-                return point;
-            }
-        }*/
         public static Vec3 RandomInUnitSphere()
         {
             int seed = Guid.NewGuid().GetHashCode();
