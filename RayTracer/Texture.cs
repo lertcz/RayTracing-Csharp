@@ -65,7 +65,7 @@ namespace RayTracer
         }
         public override Vec3 Value(double u, double v, Vec3 p)
         {
-            return new Vec3(1, 1, 1) * noise.Noise(Scale * p);
+            return new Vec3(1, 1, 1) * 0.5 * (1.0 + noise.Noise(Scale * p));
         }
     }
 }
