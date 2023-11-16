@@ -117,8 +117,11 @@ namespace RayTracer
         }*/
         public static Vec3 RandomInUnitSphere()
         {
-            double u = 2.0 * random.NextDouble() - 1.0; // Random value in the range [-1, 1]
-            double theta = 2.0 * Math.PI * random.NextDouble(); // Random angle in the range [0, 2π]
+            int seed = Guid.NewGuid().GetHashCode();
+            Random rnd = new Random(seed);
+
+            double u = 2.0 * rnd.NextDouble() - 1.0; // Random value in the range [-1, 1]
+            double theta = 2.0 * Math.PI * rnd.NextDouble(); // Random angle in the range [0, 2π]
             double r = Math.Sqrt(1.0 - u * u); // Calculate the radial distance
 
             double x = r * Math.Cos(theta);
