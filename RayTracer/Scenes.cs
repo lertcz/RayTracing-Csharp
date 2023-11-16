@@ -107,7 +107,7 @@ namespace RayTracer
             return World;
         }
     
-        public static HittableList TwoSPheres()
+        public static HittableList TwoSpheres()
         {
             HittableList Objects = new HittableList();
 
@@ -116,6 +116,18 @@ namespace RayTracer
 
             Objects.Add(new Sphere(new Vec3(0, -10, 0), 10, new Lambertian(checker)));
             Objects.Add(new Sphere(new Vec3(0, 10, 0), 10, new Lambertian(checker)));
+
+            return Objects;
+        }
+
+        public static HittableList TwoPerlinSpheres()
+        {
+            HittableList Objects = new HittableList();
+
+            Texture perlinTexture = new NoiseTexture();
+
+            Objects.Add(new Sphere(new Vec3(0, -1000, 0), 1000, new Lambertian(perlinTexture)));
+            Objects.Add(new Sphere(new Vec3(0, 2, 0), 2, new Lambertian(perlinTexture)));
 
             return Objects;
         }

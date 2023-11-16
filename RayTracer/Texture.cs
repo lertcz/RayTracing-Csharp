@@ -53,4 +53,13 @@ namespace RayTracer
             return sines < 0 ? odd.Value(u, v, p) : even.Value(u, v, p);
         }
     }
+
+    class NoiseTexture : Texture
+    {
+        readonly Perlin noise = new Perlin();
+        public override Vec3 Value(double u, double v, Vec3 p)
+        {
+            return new Vec3(1, 1, 1) * noise.Noise(p);
+        }
+    }
 }

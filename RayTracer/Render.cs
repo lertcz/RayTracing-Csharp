@@ -33,17 +33,17 @@ namespace RayTracer
 
         // Image Settings
         const float aspectRatio = 16.0f / 9.0f;
-        const int image_width = 1920; // 400
+        const int image_width = 400; // 400
         const int image_height = (int)(image_width / aspectRatio);
-        const int SamplesPerPixel = 25; //100
+        const int SamplesPerPixel = 10; //100
         // 50 (min - 2 albedo, 3 metal, 5 glass) 
-        const int MaxDepth = 15; // Maximum number of ray bounces into the scene
+        const int MaxDepth = 5; // Maximum number of ray bounces into the scene
 
         // Camera Setup
         static Vec3 LookFrom, LookAt;
         double vfov = 40.0;
-        static Vec3 VectorUP = new Vec3(0, 1, 0);
-        static float distanceToFocus = 10f; //(LookFrom - LookAt).Length(); // auto focus
+        readonly static Vec3 VectorUP = new Vec3(0, 1, 0);
+        readonly static float distanceToFocus = 10f; //(LookFrom - LookAt).Length(); // auto focus
         static float aperture = 0.0f;
         Camera Cam; // = new Camera(LookFrom, LookAt, VectorUP, 20, aspectRatio, aperture, distanceToFocus, 0, 1);
 
@@ -74,9 +74,16 @@ namespace RayTracer
                     aperture = 0.1f; 
                     break;
 
-                default:
                 case 3:
-                    World = Scenes.TwoSPheres();
+                    World = Scenes.TwoSpheres();
+                    LookFrom = new Vec3(13, 2, 3);
+                    LookAt = new Vec3(0, 0, 0);
+                    vfov = 20;
+                    break;
+
+                default:
+                case 4:
+                    World = Scenes.TwoPerlinSpheres();
                     LookFrom = new Vec3(13, 2, 3);
                     LookAt = new Vec3(0, 0, 0);
                     vfov = 20;
