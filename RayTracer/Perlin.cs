@@ -53,6 +53,22 @@ namespace RayTracer
             return PerlinInterp(c, u, v, w);
         }
 
+        public double Turb(Vec3 p, int depth=7)
+        {
+            double accum = 0;
+            Vec3 tempP= p;
+            double weight = 1;
+
+            for (int i = 0; i < depth; i++)
+            {
+                accum += weight * Noise(tempP);
+                weight *= 0.5;
+                tempP *= 2;
+            }
+
+            return Math.Abs(accum);
+        }
+
         private static double PerlinInterp(Vec3[,,] c, double u, double v, double w)
         {
             double uu = u * u * (3 - 2 * u);

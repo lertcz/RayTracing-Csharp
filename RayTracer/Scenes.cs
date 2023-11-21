@@ -131,5 +131,18 @@ namespace RayTracer
 
             return Objects;
         }
+
+        public static HittableList MarbleAndTurbulence()
+        {
+            HittableList Objects = new HittableList();
+
+            Texture turbulence = new TurbulentNoise(4);
+            Texture marble = new MarbleTexture(4);
+
+            Objects.Add(new Sphere(new Vec3(0, -1000, 0), 1000, new Lambertian(turbulence)));
+            Objects.Add(new Sphere(new Vec3(0, 2, 0), 2, new Lambertian(marble)));
+
+            return Objects;
+        }
     }
 }

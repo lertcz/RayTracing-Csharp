@@ -33,11 +33,11 @@ namespace RayTracer
 
         // Image Settings
         const float aspectRatio = 16.0f / 9.0f;
-        const int image_width = 1920; // 400
+        const int image_width = 400; // 400
         const int image_height = (int)(image_width / aspectRatio);
-        const int SamplesPerPixel = 50; //100
+        const int SamplesPerPixel = 20; //100
         // 50 (min - 2 albedo, 3 metal, 5 glass) 
-        const int MaxDepth = 20; // Maximum number of ray bounces into the scene
+        const int MaxDepth = 10; // Maximum number of ray bounces into the scene
 
         // Camera Setup
         static Vec3 LookFrom, LookAt;
@@ -81,9 +81,16 @@ namespace RayTracer
                     vfov = 20;
                     break;
 
-                default:
                 case 4:
                     World = Scenes.TwoPerlinSpheres();
+                    LookFrom = new Vec3(13, 2, 3);
+                    LookAt = new Vec3(0, 0, 0);
+                    vfov = 20;
+                    break;
+
+                default:
+                case 5:
+                    World = Scenes.MarbleAndTurbulence();
                     LookFrom = new Vec3(13, 2, 3);
                     LookAt = new Vec3(0, 0, 0);
                     vfov = 20;

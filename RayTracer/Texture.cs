@@ -68,4 +68,34 @@ namespace RayTracer
             return new Vec3(1, 1, 1) * 0.5 * (1.0 + noise.Noise(Scale * p));
         }
     }
+
+    class TurbulentNoise : Texture
+    {
+        readonly Perlin noise = new Perlin();
+        readonly double Scale;
+
+        public TurbulentNoise(double scale = 1)
+        {
+            Scale = scale;
+        }
+        public override Vec3 Value(double u, double v, Vec3 p)
+        {
+            return new Vec3(1, 1, 1) * noise.Turb(Scale * p);
+        }
+    }
+
+    class MarbleTexture : Texture
+    {
+        readonly Perlin noise = new Perlin();
+        readonly double Scale;
+
+        public MarbleTexture(double scale = 1)
+        {
+            Scale = scale;
+        }
+        public override Vec3 Value(double u, double v, Vec3 p)
+        {
+            return new Vec3(1, 1, 1) * 0.5 * (1.0 + Math.Sin(Scale * p.z + 10 * noise.Turb(p)));
+        }
+    }
 }
