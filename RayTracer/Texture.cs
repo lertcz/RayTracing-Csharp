@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
+using System.Windows.Media.Media3D;
 
 namespace RayTracer
 {
@@ -114,19 +116,19 @@ namespace RayTracer
             if (image.Height <= 0) return new Vec3(0, 1, 1);
 
             // Clamp input texture coordinates to [0,1] x [1,0]
-            u = Interval.Clamp(u, 0, 1);
-            v = 1.0 - Interval.Clamp(v, 0, 1);  // Flip V to image coordinates
+            u = u.Clamp(0, 1);
+            v = 1.0 - v.Clamp(0, 1);  // Flip V to image coordinates
 
             int i = (int)(u * image.Width);
             int j = (int)(v * image.Height);
 
-            i = Math.Clamp(i, 0, image.Width - 1);
-            j = Math.Clamp(j, 0, image.Height - 1);
+            if (i >= image.Width) i = image.Width - 1;
+            if (j >= image.Height) j = image.Height - 1;
 
             System.Drawing.Color pixel = image.GetPixel(i, j);
 
             double colorScale = 1.0 / 255.0;
-            return new Color(colorScale * pixel.R, colorScale * pixel.G, colorScale * pixel.B);
+            return new Vec3(colorScale * pixel.R, colorScale * pixel.G, colorScale * pixel.B);
         }
     }
 }

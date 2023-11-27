@@ -151,7 +151,7 @@ namespace RayTracer
 
             Texture EarthTexture = new ImageTexture("earthmap.jpg");
 
-            Objects.Add(new Sphere(new Vec3(0, 0, 0), 2, new Lambertian(EarthTexture)))
+            Objects.Add(new Sphere(new Vec3(0, 0, 0), 2, new Lambertian(EarthTexture)));
 
             return Objects;
         }

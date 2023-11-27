@@ -111,8 +111,8 @@ namespace RayTracer
                 Bitmap image = new Bitmap(image_width, image_height);
 
                 // Render
-                //Bitmap img = SingleProcess();
-                Bitmap img = MultiThread();
+                Bitmap img = SingleProcess();
+                //Bitmap img = MultiThread();
 
                 Render_image.Dispatcher.Invoke(() => Render_image.Source = BitmapToImageSource(img));
                 Result = img; // save Bitmap in a variable for saving into a file
