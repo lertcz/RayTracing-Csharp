@@ -81,7 +81,7 @@ namespace RayTracer
                         {
                             // diffuse
                             Vec3 albedo = Vec3.Random() * Vec3.Random();
-                            Vec3 center2 = new Vec3(0, random.NextDouble(0, .5), 0);
+                            Vec3 center2 = center + new Vec3(0, random.NextDouble(0, .5), 0);
                             World.Add(new MovingSphere(center, center2, 0, 1, .2, new Lambertian(albedo)));
                         }
                         else if (chooseMaterial < .95)

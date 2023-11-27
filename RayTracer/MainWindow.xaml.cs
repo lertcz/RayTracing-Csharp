@@ -42,7 +42,7 @@ namespace RayTracer
 
         private void Start_Click(object sender, RoutedEventArgs e)
         {
-            render.Start(0);
+            render.Start(2);
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)
