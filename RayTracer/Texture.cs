@@ -98,4 +98,35 @@ namespace RayTracer
             return new Vec3(1, 1, 1) * 0.5 * (1.0 + Math.Sin(Scale * p.z + 10 * noise.Turb(p)));
         }
     }
+
+    class ImageTexture : Texture
+    {
+        private readonly Bitmap image;
+
+        public ImageTexture(string filename)
+        {
+            image = new Bitmap(filename);
+        }
+
+        public override Vec3 Value(double u, double v, Vec3 p)
+        {
+            // If we have no texture data, then return solid cyan as a debugging aid.
+            if (image.Height <= 0) return new Vec3(0, 1, 1);
+
+            // Clamp input texture coordinates to [0,1] x [1,0]
+            u = Interval.Clamp(u, 0, 1);
+            v = 1.0 - Interval.Clamp(v, 0, 1);  // Flip V to image coordinates
+
+            int i = (int)(u * image.Width);
+            int j = (int)(v * image.Height);
+
+            i = Math.Clamp(i, 0, image.Width - 1);
+            j = Math.Clamp(j, 0, image.Height - 1);
+
+            System.Drawing.Color pixel = image.GetPixel(i, j);
+
+            double colorScale = 1.0 / 255.0;
+            return new Color(colorScale * pixel.R, colorScale * pixel.G, colorScale * pixel.B);
+        }
+    }
 }

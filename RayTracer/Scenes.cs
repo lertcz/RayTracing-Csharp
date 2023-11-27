@@ -144,5 +144,16 @@ namespace RayTracer
 
             return Objects;
         }
+
+        public static HittableList Earth()
+        {
+            HittableList Objects = new HittableList();
+
+            Texture EarthTexture = new ImageTexture("earthmap.jpg");
+
+            Objects.Add(new Sphere(new Vec3(0, 0, 0), 2, new Lambertian(EarthTexture)))
+
+            return Objects;
+        }
     }
 }
