@@ -35,7 +35,7 @@ namespace RayTracer
         const float aspectRatio = 16.0f / 9.0f;
         const int image_width = 400; // 400
         const int image_height = (int)(image_width / aspectRatio);
-        const int SamplesPerPixel = 50; //100
+        const int SamplesPerPixel = 10; //100
         // 50 (min - 2 albedo, 3 metal, 5 glass) 
         const int MaxDepth = 10; // Maximum number of ray bounces into the scene
 
@@ -111,8 +111,8 @@ namespace RayTracer
                 Bitmap image = new Bitmap(image_width, image_height);
 
                 // Render
-                Bitmap img = SingleProcess();
-                //Bitmap img = MultiThread();
+                // Bitmap img = SingleProcess();
+                Bitmap img = MultiThread();
 
                 Render_image.Dispatcher.Invoke(() => Render_image.Source = BitmapToImageSource(img));
                 Result = img; // save Bitmap in a variable for saving into a file
