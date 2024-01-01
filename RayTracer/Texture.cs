@@ -108,54 +108,52 @@ namespace RayTracer
 
     class ImageTexture : Texture
     {
-        // private readonly Bitmap image;
         //ConcurrentDictionary<int, System.Drawing.Color> image = new ConcurrentDictionary<Tuple<int, int, Color>>(new Tuple<int, int, Color>[image_height * image_width]);
-        //private BitmapData bitmapData;
+        private readonly ConcurrentDictionary<(int, int), Color> imageData = new ConcurrentDictionary<(int, int), Color>();
+        private readonly int Height, Width;
 
         public ImageTexture(string filename)
         {
-            //Bitmap tempImg = new Bitmap("@\Images\earthmap.jpg");
-            Console.WriteLine(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName);
+            // TODO better loading!! mb from blender :)
 
-            // Lock the bitmap's bits.  
-            //Rectangle rect = new Rectangle(0, 0, tempImg.Width, tempImg.Height);
-            //BitmapData bitmapData = tempImg.LockBits(rect, ImageLockMode.ReadOnly, tempImg.PixelFormat);
+            Console.WriteLine(Directory.GetParent(Environment.CurrentDirectory).Parent.FullName + "\\Images\\" + filename);
+            string path = Directory.GetParent(Environment.CurrentDirectory).Parent.FullName + "\\Images\\" + filename;
+            Console.WriteLine(path);
+            Bitmap tempImg = new Bitmap(path);
 
-            //// Get the address of the first line.
-            //IntPtr ptr = bitmapData.Scan0;
+            Height = tempImg.Height;
+            Width = tempImg.Width;
 
-            //// Declare an array to hold the bytes of the bitmap.
-            //int bytes = Math.Abs(bitmapData.Stride) * tempImg.Height;
-            //byte[] rgbValues = new byte[bytes];
-
-            //// Copy the RGB values into the array.
-            //Marshal.Copy(ptr, rgbValues, 0, bytes);
-
-            //tempImg.UnlockBits(bitmapData);
-
-            //Console.WriteLine(rgbValues[0]);
+            for (int h = 0; h < Height; h++)
+            {
+                for (int w = 0; w < Width; w++)
+                {
+                    imageData[(w, h)] = tempImg.GetPixel(w, h);
+                }
+            }
         }
 
         public override Vec3 Value(double u, double v, Vec3 p)
         {
+            //return new Vec3(0, 1, 1);
+            
             // If we have no texture data, then return solid cyan as a debugging aid.
-            // if (image.Height <= 0) return new Vec3(0, 1, 1);
+            if (imageData.Count <= 0) return new Vec3(0, 1, 1);
 
             // Clamp input texture coordinates to [0,1] x [1,0]
-            /* u = u.Clamp(0, 1);
+            u = u.Clamp(0, 1);
             v = 1.0 - v.Clamp(0, 1);  // Flip V to image coordinates
 
-            int i = (int)(u * image.Width);
-            int j = (int)(v * image.Height);
+            int i = (int)(u * Width);
+            int j = (int)(v * Height);
 
-            if (i >= image.Width) i = image.Width - 1;
-            if (j >= image.Height) j = image.Height - 1;
-            
-            Color pixel = image.GetPixel(i, j);
+            if (i >= Width) i = Width - 1;
+            if (j >= Height) j = Height - 1;
+
+            Color pixel = imageData[(i, j)];
 
             double colorScale = 1.0 / 255.0;
-            return new Vec3(colorScale * pixel.R, colorScale * pixel.G, colorScale * pixel.B); */
-            return new Vec3(0, 1, 1);
+            return new Vec3(colorScale * pixel.R, colorScale * pixel.G, colorScale * pixel.B);
         }
     }
 }
