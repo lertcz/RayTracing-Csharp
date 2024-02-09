@@ -26,5 +26,6 @@ namespace RayTracer
     internal abstract class Hittable
     {
         public abstract bool Hit(Ray r, double tMin, double tMax, ref HitRecord rec);
+        public abstract bool BoundingBox(double time0, double time1, out AABB outputBox);
     }
 }

@@ -63,5 +63,14 @@ namespace RayTracer
 
             return true;
         }
+
+        public override bool BoundingBox(double time0, double time1, out AABB outputBox)
+        {
+            outputBox = new AABB(
+                Center - new Vec3(Radius, Radius, Radius),
+                Center + new Vec3(Radius, Radius, Radius)
+            );
+            return true;
+        }
     }
 }

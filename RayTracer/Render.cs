@@ -33,7 +33,7 @@ namespace RayTracer
 
         // Image Settings
         const float aspectRatio = 16.0f / 9.0f;
-        const int image_width = 400; // 400
+        const int image_width = 800; // 400
         const int image_height = (int)(image_width / aspectRatio);
         const int SamplesPerPixel = 10; //100
         // 50 (min - 2 albedo, 3 metal, 5 glass) 

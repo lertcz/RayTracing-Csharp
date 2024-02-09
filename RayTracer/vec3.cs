@@ -11,26 +11,26 @@ namespace RayTracer
 {
     internal class Vec3
     {
-        public double[] e;
+        public double[] val;
         private readonly static Random random = new Random();
 
         public Vec3()
         {
-            e = new double[] { 0, 0, 0 };
+            val = new double[] { 0, 0, 0 };
         }
 
         public Vec3(double e0, double e1, double e2)
         {
-            e = new double[] { e0, e1, e2 };
+            val = new double[] { e0, e1, e2 };
         }
 
-        public double x { get { return e[0]; } }
-        public double y { get { return e[1]; } }
-        public double z { get { return e[2]; } }
+        public double x { get { return val[0]; } }
+        public double y { get { return val[1]; } }
+        public double z { get { return val[2]; } }
 
         public static Vec3 operator -(Vec3 v)
         {
-            return new Vec3(-v.e[0], -v.e[1], -v.e[2]);
+            return new Vec3(-v.val[0], -v.val[1], -v.val[2]);
         }
 
         public static Vec3 operator +(Vec3 v1, Vec3 v2)

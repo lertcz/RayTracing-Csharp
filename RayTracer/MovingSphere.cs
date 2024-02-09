@@ -55,5 +55,20 @@ namespace RayTracer
 
             return true;
         }
+
+        public override bool BoundingBox(double time0, double time1, out AABB outputBox)
+        {
+            var box0 = new AABB(
+                Center(time0) - new Vec3(Radius, Radius, Radius),
+                Center(time0) + new Vec3(Radius, Radius, Radius));
+
+            var box1 = new AABB(
+                Center(time1) - new Vec3(Radius, Radius, Radius),
+                Center(time1) + new Vec3(Radius, Radius, Radius));
+
+            outputBox = SurroundingBox(box0, box1);
+
+            return true;
+        }
     }
 }

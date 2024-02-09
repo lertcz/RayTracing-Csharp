@@ -22,6 +22,32 @@ namespace RayTracer
             Objects.Add(obj);
         }
 
+        public override bool BoundingBox(double time0, double time1, out AABB outputBox)
+        {
+            if (Objects.Count == 0)
+            {
+                outputBox = null;
+                return false;
+            }
+
+            outputBox = null;
+            bool firstBox = true;
+
+            foreach (var hittableObject in Objects)
+            {
+                if (!hittableObject.BoundingBox(time0, time1, out var tempBox))
+                {
+                    outputBox = null;
+                    return false;
+                }
+
+                outputBox = firstBox ? tempBox : AABB.SurroundingBox(outputBox, tempBox);
+                firstBox = false;
+            }
+
+            return true;
+        }
+
         public override bool Hit(Ray r, double tMin, double tMax, ref HitRecord rec)
         {
             HitRecord tempRec = new HitRecord();

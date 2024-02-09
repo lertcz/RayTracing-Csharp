@@ -56,11 +56,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AABB.cs" />
+    <Compile Include="BVH.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="ExtensionClasses.cs" />
     <Compile Include="Hittable.cs" />
     <Compile Include="HittableList.cs" />
-    <Compile Include="Interval.cs" />
     <Compile Include="Material.cs" />
     <Compile Include="MovingSphere.cs" />
     <Compile Include="Perlin.cs" />
