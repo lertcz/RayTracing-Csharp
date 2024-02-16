@@ -41,22 +41,25 @@ namespace RayTracer
     {
         private readonly SolidColor even;
         private readonly SolidColor odd;
+        private readonly double frequency;
 
-        public CheckerTexture(SolidColor evenTexture, SolidColor oddTexture)
+        public CheckerTexture(SolidColor evenTexture, SolidColor oddTexture, double frequency = 10.0)
         {
             even = evenTexture;
             odd = oddTexture;
+            this.frequency = frequency;
         }
 
-        public CheckerTexture(Vec3 c1, Vec3 c2)
+        public CheckerTexture(Vec3 c1, Vec3 c2, double frequency = 10.0)
         {
             even = new SolidColor(c1);
             odd = new SolidColor(c2);
+            this.frequency = frequency;
         }
 
         public override Vec3 Value(double u, double v, Vec3 p)
         {
-            double sines = Math.Sin(10 * p.x) * Math.Sin(10 * p.y) * Math.Sin(10 * p.z);
+            double sines = Math.Sin(frequency * p.x) * Math.Sin(frequency * p.y) * Math.Sin(frequency * p.z);
             return sines < 0 ? odd.Value(u, v, p) : even.Value(u, v, p);
         }
     }

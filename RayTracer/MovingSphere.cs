@@ -66,7 +66,7 @@ namespace RayTracer
                 Center(time1) - new Vec3(Radius, Radius, Radius),
                 Center(time1) + new Vec3(Radius, Radius, Radius));
 
-            outputBox = SurroundingBox(box0, box1);
+            outputBox = AABB.SurroundingBox(box0, box1);
 
             return true;
         }

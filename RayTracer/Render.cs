@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Windows.Documents;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
@@ -17,7 +18,7 @@ namespace RayTracer
 {
     internal class Render : INotifyPropertyChanged
     {
-        readonly Random rnd = new Random();
+        Random rnd;
         public event PropertyChangedEventHandler PropertyChanged;
         private double _renderProgress = 0;
         public double RenderProgress
@@ -32,12 +33,12 @@ namespace RayTracer
         }
 
         // Image Settings
-        const float aspectRatio = 16.0f / 9.0f;
-        const int image_width = 800; // 400
-        const int image_height = (int)(image_width / aspectRatio);
-        const int SamplesPerPixel = 10; //100
+        static float aspectRatio = 16.0f / 9.0f;
+        static int image_width = 800; // 400
+        static int image_height = (int)(image_width / aspectRatio);
+        int SamplesPerPixel = 10; //100
         // 50 (min - 2 albedo, 3 metal, 5 glass) 
-        const int MaxDepth = 10; // Maximum number of ray bounces into the scene
+        static int MaxDepth = 10; // Maximum number of ray bounces into the scene
 
         // Camera Setup
         static Vec3 LookFrom, LookAt;
@@ -46,6 +47,8 @@ namespace RayTracer
         readonly static float distanceToFocus = 10f; //(LookFrom - LookAt).Length(); // auto focus
         static float aperture = 0.0f;
         Camera Cam; // = new Camera(LookFrom, LookAt, VectorUP, 20, aspectRatio, aperture, distanceToFocus, 0, 1);
+
+        Vec3 Background = new Vec3(0, 0, 0);
 
         // Scene
         HittableList World;
@@ -56,10 +59,12 @@ namespace RayTracer
 
         public void Start(int scene)
         {
+            
             switch (scene)
             {
                 case 1:
                     World = Scenes.Part1RandomFinalScene();
+                    Background = new Vec3(0.70, 0.80, 1.00);
                     LookFrom = new Vec3(13, 2, 3);
                     LookAt = new Vec3(0, 0, 0);
                     vfov = 20;
@@ -68,6 +73,7 @@ namespace RayTracer
 
                 case 2:
                     World = Scenes.MotionBlurScene();
+                    Background = new Vec3(0.70, 0.80, 1.00);
                     LookFrom = new Vec3(13, 2, 3);
                     LookAt = new Vec3(0, 0, 0);
                     vfov = 20;
@@ -76,6 +82,7 @@ namespace RayTracer
 
                 case 3:
                     World = Scenes.TwoSpheres();
+                    Background = new Vec3(0.70, 0.80, 1.00);
                     LookFrom = new Vec3(13, 2, 3);
                     LookAt = new Vec3(0, 0, 0);
                     vfov = 20;
@@ -83,6 +90,7 @@ namespace RayTracer
 
                 case 4:
                     World = Scenes.TwoPerlinSpheres();
+                    Background = new Vec3(0.70, 0.80, 1.00);
                     LookFrom = new Vec3(13, 2, 3);
                     LookAt = new Vec3(0, 0, 0);
                     vfov = 20;
@@ -90,17 +98,51 @@ namespace RayTracer
 
                 case 5:
                     World = Scenes.MarbleAndTurbulence();
+                    Background = new Vec3(0.70, 0.80, 1.00);
                     LookFrom = new Vec3(13, 2, 3);
                     LookAt = new Vec3(0, 0, 0);
                     vfov = 20;
                     break;
 
-                default:
                 case 6:
                     World = Scenes.Earth();
+                    Background = new Vec3(0.70, 0.80, 1.00);
                     LookFrom = new Vec3(13, 2, 3);
                     LookAt = new Vec3(0, 0, 0);
                     vfov = 20;
+                    break;
+
+                case 7:
+                    World = Scenes.SimpleLight();
+                    SamplesPerPixel = 400;
+                    LookFrom = new Vec3(26, 3, 6);
+                    LookAt = new Vec3(0, 2, 0);
+                    vfov = 20;
+                    break;
+
+                case 8:
+                    World = Scenes.CornelBox();
+                    aspectRatio = 1;
+                    image_width = 600;
+                    image_height = (int)(image_width / aspectRatio);
+                    SamplesPerPixel = 500;
+                    LookFrom = new Vec3(278, 278, -800);
+                    LookAt = new Vec3(278, 278, 0);
+                    vfov = 37;
+                    break;
+
+                case 9:
+                default:
+                    World = Scenes.LightShowcase();
+                    Background = new Vec3(0.70, 0.80, 1.00);
+                    aspectRatio = 1;
+                    image_width = 300;
+                    MaxDepth = 20;
+                    image_height = (int)(image_width / aspectRatio);
+                    SamplesPerPixel = 50;
+                    LookFrom = new Vec3(278, 278, -800);
+                    LookAt = new Vec3(278, 278, 0);
+                    vfov = 37;
                     break;
             }
             Cam = new Camera(LookFrom, LookAt, VectorUP, vfov, aspectRatio, aperture, distanceToFocus, 0, 1);
@@ -132,10 +174,11 @@ namespace RayTracer
                     Vec3 PixelColor = new Vec3(0, 0, 0);
                     for (int s = 0; s < SamplesPerPixel; ++s)
                     {
+                        rnd = new Random();
                         double u = (x + rnd.NextDouble(0.0, 1.0)) / (image_width - 1);
                         double v = (y + rnd.NextDouble(0.0, 1.0)) / (image_height - 1);
                         Ray r = Cam.GetRay(u, v);
-                        PixelColor += RayColor(r, World, MaxDepth);
+                        PixelColor += RayColor(r, Background, World, MaxDepth);
                     }
 
                     image.SetPixel(
@@ -172,10 +215,11 @@ namespace RayTracer
 
                     for (int s = 0; s < SamplesPerPixel; ++s)
                     {
+                        rnd = new Random();
                         double u = (x + rnd.NextDouble(0.0, 1.0)) / (image_width - 1);
                         double v = (y + rnd.NextDouble(0.0, 1.0)) / (image_height - 1);
                         Ray r = Cam.GetRay(u, v);
-                        PixelColor += RayColor(r, World, MaxDepth);
+                        PixelColor += RayColor(r, Background, World, MaxDepth);
                     }
                     localPixels[x] = new Tuple<int, int, Color>(image_height - 1 - y, x, RayColorToPixel(PixelColor));
                 }
@@ -187,11 +231,9 @@ namespace RayTracer
 
             });
 
-            Debug.WriteLine("DONE");
-
             Bitmap image = new Bitmap(image_width, image_height);
 
-            while ( ! pixels.IsEmpty)
+            while (!pixels.IsEmpty)
             {
 
                 if (pixels.TryPop(out var pixel))
@@ -208,28 +250,50 @@ namespace RayTracer
             return image;
         }
 
-        private Vec3 RayColor(Ray r, Hittable World, int depth)
+        //emitting  
+        private Vec3 RayColor(Ray r, Vec3 background, Hittable World, int depth)
         {
             HitRecord rec = new HitRecord();
 
             // If we've exceeded the ray bounce limit, no more light is gathered.
             if (depth <= 0)
-                return new Vec3(0.0, 0.0, 0.0);
+                return new Vec3(0, 0, 0);
 
-            if (World.Hit(r, 0.001, double.MaxValue, ref rec))
-            {
-                if (rec.Material.Scatter(r, ref rec, out Vec3 colorAttenuation, out Ray scattered))
-                {
-                    return colorAttenuation * RayColor(scattered, World, depth - 1);
-                }
-                return new Vec3(0.0, 0.0, 0.0);
-            }
-            Vec3 unit_direction = r.Direction.UnitVector();
-            double t = 0.5 * (unit_direction.y + 1.0);
-            return (1.0 - t) * new Vec3(1.0, 1.0, 1.0) + t * new Vec3(0.5, 0.7, 1.0);
+            // If the ray hits nothing, return the background color.
+            if (!World.Hit(r, 0.001, double.PositiveInfinity, ref rec))
+                return background;
+
+            Vec3 emitted = rec.Material.Emitted(rec.U, rec.V, rec.P);
+
+            if (!rec.Material.Scatter(r, ref rec, out Vec3 colorAttenuation, out Ray scattered))
+                return emitted;
+
+            return emitted + colorAttenuation * RayColor(scattered, background, World, depth - 1);
         }
 
-        /*private Vec3 RayColor(Ray r, Hittable World, int maxDepth) // sample glitch
+        // old
+        //private Vec3 RayColor(Ray r, Hittable World, int depth)
+        //{
+        //    HitRecord rec = new HitRecord();
+
+        //    // If we've exceeded the ray bounce limit, no more light is gathered.
+        //    if (depth <= 0)
+        //        return new Vec3(0.0, 0.0, 0.0);
+
+        //    if (World.Hit(r, 0.001, double.MaxValue, ref rec))
+        //    {
+        //        if (rec.Material.Scatter(r, ref rec, out Vec3 colorAttenuation, out Ray scattered))
+        //        {
+        //            return colorAttenuation * RayColor(scattered, World, depth - 1);
+        //        }
+        //        return new Vec3(0.0, 0.0, 0.0);
+        //    }
+        //    Vec3 unit_direction = r.Direction.UnitVector();
+        //    double t = 0.5 * (unit_direction.y + 1.0);
+        //    return (1.0 - t) * new Vec3(1.0, 1.0, 1.0) + t * new Vec3(0.5, 0.7, 1.0);
+        //}
+
+    /*private Vec3 RayColor(Ray r, Hittable World, int maxDepth) // sample glitch
         {
 
             var vec3one = new Vec3(1.0, 1.0, 1.0);
@@ -271,6 +335,11 @@ namespace RayTracer
             double R = color.x;
             double G = color.y;
             double B = color.z;
+
+            // Replace NaN components with zero.
+            if (double.IsNaN(R)) R = 0.0;
+            if (double.IsNaN(G)) G = 0.0;
+            if (double.IsNaN(B)) B = 0.0;
 
             // Divide the color by the number of samples and gamma-correct for gamma=2.0.
             double scale = 1.0 / SamplesPerPixel;

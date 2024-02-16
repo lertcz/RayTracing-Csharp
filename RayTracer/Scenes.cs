@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
+using System.Xml.Linq;
 
 namespace RayTracer
 {
@@ -152,6 +153,89 @@ namespace RayTracer
             Texture EarthTexture = new ImageTexture("earthmap.jpg");
 
             Objects.Add(new Sphere(new Vec3(0, 0, 0), 2, new Lambertian(EarthTexture)));
+
+            return Objects;
+        }
+    
+        public static HittableList SimpleLight()
+        {
+            HittableList Objects = new HittableList();
+
+            Texture perlinTexture = new NoiseTexture(4);
+            Objects.Add(new Sphere(new Vec3(0, -1000, 0), 1000, new Lambertian(perlinTexture)));
+            Objects.Add(new Sphere(new Vec3(0, 2, 0), 2, new Lambertian(perlinTexture)));
+
+            DiffuseLight diffuseLight = new DiffuseLight(new Vec3(1, 1, 1));
+            Objects.Add(new XYRect(3, 5, 1, 3, -2, diffuseLight));
+
+            return Objects;
+        }
+
+        public static HittableList CornelBox()
+        {
+            HittableList Objects = new HittableList();
+
+            Material Red = new Lambertian(new Vec3(.65, .05, .05));
+            Material White = new Lambertian(new Vec3(.73, .73, .73));
+            Material Green = new Lambertian(new Vec3(.12, .45, .15));
+            //DiffuseLight Light = new DiffuseLight(new Vec3(15, 15, 15));
+            DiffuseLight Light = new DiffuseLight(new Vec3(25, 25, 25));
+
+            Objects.Add(new YZRect(0, 555, 0, 555, 555, Green));
+            Objects.Add(new YZRect(0, 555, 0, 555, 0, Red));
+            Objects.Add(new XZRect(213, 343, 227, 332, 554, Light));
+            Objects.Add(new XZRect(0, 555, 0, 555, 0, White));
+            Objects.Add(new XZRect(0, 555, 0, 555, 555, White));
+            Objects.Add(new XYRect(0, 555, 0, 555, 555, White));
+
+            Hittable box1 = new Box(new Vec3(0, 0, 0), new Vec3(165, 330, 165), White);
+            box1 = new RotateY(box1, 15);
+            box1 = new Translate(box1, new Vec3(265, 0, 295));
+            Objects.Add(box1);
+
+            Hittable box2 = new Box(new Vec3(0, 0, 0), new Vec3(165, 165, 165), White);
+            box2 = new RotateY(box2, -18);
+            box2 = new Translate(box2, new Vec3(130, 0, 65));
+            Objects.Add(box2);
+
+            return Objects;
+        }
+
+        public static HittableList LightShowcase()
+        {
+            HittableList Objects = new HittableList();
+
+            Material Red = new Lambertian(new Vec3(.65, .05, .05));
+            Material White = new Lambertian(new Vec3(.73, .73, .73));
+            Material Green = new Lambertian(new Vec3(.12, .45, .15));
+            Material Metal = new Metal(new Vec3(.7, .7, .7), .2);
+            Material Mirror = new Metal(new Vec3(.85, .85, .85), 0);
+            Material Glass = new Dielectric(1.5);
+            Material Checker = new Lambertian(new CheckerTexture(new Vec3(.9, .9, .9), new Vec3(.1, .1, .1), .1));
+            DiffuseLight Light = new DiffuseLight(new Vec3(1, 1, 1) * 30);
+            
+            Objects.Add(new YZRect(0, 555, 0, 555, 555, Checker)); //left
+            Objects.Add(new YZRect(0, 555, 0, 555, -.1, Checker)); // right
+            //Objects.Add(new XZRect(213, 343, 227, 332, 554, Light));
+            Objects.Add(new XZRect(0, 555, 0, 555, -.1, Checker)); // bottom
+            Objects.Add(new XZRect(0, 555, 0, 555, 555, Checker)); // top
+            Objects.Add(new XYRect(0, 555, 0, 555, 555, Checker)); // back
+            
+            //Objects.Add(new XYRect(0, 555, 0, 555, -.1, Checker)); // front test
+
+            Objects.Add(new Sphere(new Vec3(278, 378, 0), 50, Glass));
+            Objects.Add(new Sphere(new Vec3(278, 278, 0), 50, Red));
+            Objects.Add(new Sphere(new Vec3(278, 178, 0), 50, Metal));
+
+            //Hittable box1 = new Box(new Vec3(0, 0, 0), new Vec3(165, 330, 165), White);
+            //box1 = new RotateY(box1, 15);
+            //box1 = new Translate(box1, new Vec3(265, 0, 295));
+            //Objects.Add(box1);
+
+            //Hittable box2 = new Box(new Vec3(0, 0, 0), new Vec3(165, 165, 165), White);
+            //box2 = new RotateY(box2, -18);
+            //box2 = new Translate(box2, new Vec3(130, 0, 65));
+            //Objects.Add(box2);
 
             return Objects;
         }

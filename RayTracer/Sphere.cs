@@ -37,6 +37,9 @@ namespace RayTracer
 
         public override bool Hit(Ray r, double tMin, double tMax, ref HitRecord rec)
         {
+            //test
+            if (rec == null) return false;
+
             Vec3 oc = r.Origin - Center;
             double a = r.Direction.LengthSquared();
             double halfB = oc.Dot(r.Direction);

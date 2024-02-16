@@ -9,6 +9,7 @@ namespace RayTracer
 {
     internal abstract class Material
     {
+        public virtual Vec3 Emitted(double u, double v, Vec3 p) => new Vec3(0, 0, 0);
         public abstract bool Scatter(Ray r, ref HitRecord rec, out Vec3 colorAttenuation, out Ray scattered);
     }
 
@@ -100,6 +101,35 @@ namespace RayTracer
             double r0 = (1 - refIdx) / (1 + refIdx);
             r0 *= r0;
             return r0 + (1 - r0) * Math.Pow(1 - cosine, 5);
+        }
+    }
+
+    class DiffuseLight : Material
+    {
+        public Texture Emit;
+
+        public DiffuseLight(Vec3 c)
+        {
+            Emit = new SolidColor(c);
+        }
+
+        public DiffuseLight(Texture texture)
+        {
+            Emit = texture ?? throw new ArgumentNullException(nameof(texture));
+        }
+
+        // Implementation of the emitted function
+        public override Vec3 Emitted(double u, double v, Vec3 p)
+        {
+            return Emit.Value(u, v, p);
+        }
+
+        public override bool Scatter(Ray r, ref HitRecord rec, out Vec3 colorAttenuation, out Ray scattered)
+        {
+            // dummy data cuz C# is a prick >:(
+            colorAttenuation = new Vec3(0, 0, 0);
+            scattered = new Ray(new Vec3(0, 0, 0), new Vec3(1, 1, 1), 1);
+            return false;
         }
     }
 }
