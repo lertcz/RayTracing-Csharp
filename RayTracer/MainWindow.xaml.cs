@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -42,7 +43,26 @@ namespace RayTracer
 
         private void Start_Click(object sender, RoutedEventArgs e)
         {
-            render.Start(0);
+            string Scene = "", Quality = "", Width = "";
+
+            Scene = SceneSelect.SelectedItem.ToString();
+            foreach (var child in QualityRadio.Children)
+            {
+                if (child is RadioButton radioButton && radioButton.IsChecked == true)
+                {
+                    Quality = radioButton.Content.ToString();
+                    break;
+                }
+            }
+            foreach (var child in ImageWidth.Children)
+            {
+                if (child is RadioButton radioButton && radioButton.IsChecked == true)
+                {
+                    Width = radioButton.Content.ToString();
+                    break;
+                }
+            }
+            render.Start(Scene, Quality, Width);
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)
@@ -62,9 +82,9 @@ namespace RayTracer
             }
         }
 
-        private void Test_Click(object sender, RoutedEventArgs e)
+        private void OpenSettings_Click(object sender, RoutedEventArgs e)
         {
-
+            SettingsPopup.IsOpen = !SettingsPopup.IsOpen;
         }
     }
 }

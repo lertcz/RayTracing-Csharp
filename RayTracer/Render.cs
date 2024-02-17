@@ -57,13 +57,42 @@ namespace RayTracer
         public Bitmap Result;
         public System.Windows.Controls.Image Render_image { get; set; }
 
-        public void Start(int scene)
+        public void Start(string scene, string quality, string size)
         {
-            if (inProgress) return; // failsafe
+            //if (inProgress) return; // failsafe
+
+            #region Settings
+            if (quality == "Low")
+            {
+                MaxDepth = 10;
+                SamplesPerPixel = 50;
+            }
+            else if (quality == "Medium")
+            {
+                MaxDepth = 50;
+                SamplesPerPixel = 150;
+            }
+            else if (quality == "High")
+            {
+                MaxDepth = 100;
+                SamplesPerPixel = 300;
+            }
+
+            if (size == "400 px") image_width = 300;
+            else if (size == "600 px") image_width = 600;
+            else if (size == "1080 px") image_width = 1080;
+            image_height = (int)(image_width / aspectRatio);
+
+            Console.WriteLine("---");
+            Console.WriteLine(MaxDepth);
+            Console.WriteLine(SamplesPerPixel);
+            Console.WriteLine(image_width);
+            //return;
+            #endregion Settings
 
             switch (scene)
             {
-                case 1:
+                case "1":
                     World = Scenes.Part1RandomFinalScene();
                     Background = new Vec3(0.70, 0.80, 1.00);
                     LookFrom = new Vec3(13, 2, 3);
@@ -71,8 +100,7 @@ namespace RayTracer
                     vfov = 20;
                     aperture = 0.1f;
                     break;
-
-                case 2:
+                case "2":
                     World = Scenes.MotionBlurScene();
                     Background = new Vec3(0.70, 0.80, 1.00);
                     LookFrom = new Vec3(13, 2, 3);
@@ -80,32 +108,21 @@ namespace RayTracer
                     vfov = 20;
                     aperture = 0.1f; 
                     break;
-
-                case 3:
+                case "3":
                     World = Scenes.TwoSpheres();
                     Background = new Vec3(0.70, 0.80, 1.00);
                     LookFrom = new Vec3(13, 2, 3);
                     LookAt = new Vec3(0, 0, 0);
                     vfov = 20;
                     break;
-
-                case 4:
+                case "4":
                     World = Scenes.TwoPerlinSpheres();
                     Background = new Vec3(0.70, 0.80, 1.00);
                     LookFrom = new Vec3(13, 2, 3);
                     LookAt = new Vec3(0, 0, 0);
                     vfov = 20;
                     break;
-
-                case 5:
-                    World = Scenes.MarbleAndTurbulence();
-                    Background = new Vec3(0.70, 0.80, 1.00);
-                    LookFrom = new Vec3(13, 2, 3);
-                    LookAt = new Vec3(0, 0, 0);
-                    vfov = 20;
-                    break;
-
-                case 6:
+                case "5":
                     World = Scenes.Earth();
                     Background = new Vec3(0.70, 0.80, 1.00);
                     LookFrom = new Vec3(13, 2, 3);
@@ -113,26 +130,36 @@ namespace RayTracer
                     vfov = 20;
                     break;
 
-                case 7:
-                    World = Scenes.SimpleLight();
-                    SamplesPerPixel = 400;
-                    LookFrom = new Vec3(26, 3, 6);
-                    LookAt = new Vec3(0, 2, 0);
+                case "Marbles":
+                    World = Scenes.Part1RandomFinalScene();
+                    Background = new Vec3(0.70, 0.80, 1.00);
+                    LookFrom = new Vec3(13, 2, 3);
+                    LookAt = new Vec3(0, 0, 0);
                     vfov = 20;
+                    aperture = 0.1f;
                     break;
-
-                case 8:
-                    World = Scenes.CornelBox();
+                case "Material Preview":
+                    World = Scenes.LightShowcase();
+                    Background = new Vec3(0.70, 0.80, 1.00);
                     aspectRatio = 1;
-                    image_width = 600;
                     image_height = (int)(image_width / aspectRatio);
-                    SamplesPerPixel = 500;
                     LookFrom = new Vec3(278, 278, -800);
                     LookAt = new Vec3(278, 278, 0);
                     vfov = 37;
                     break;
+                case "Light emmision":
+                    World = Scenes.LightShowcase();
+                    Background = new Vec3(0.70, 0.80, 1.00);
+                    aspectRatio = 1;
+                    image_height = (int)(image_width / aspectRatio);
+                    SamplesPerPixel *= 4;
+                    LookFrom = new Vec3(278, 278, -800);
+                    LookAt = new Vec3(278, 278, 0);
+                    vfov = 37;
+                    break;
+                case "Focus Showcase":
+                    break;
 
-                case 9:
                 default:
                     World = Scenes.LightShowcase();
                     Background = new Vec3(0.70, 0.80, 1.00);
@@ -140,6 +167,7 @@ namespace RayTracer
                     image_width = 300;
                     MaxDepth = 20;
                     image_height = (int)(image_width / aspectRatio);
+                    MaxDepth = 20;
                     SamplesPerPixel = 50;
                     LookFrom = new Vec3(278, 278, -800);
                     LookAt = new Vec3(278, 278, 0);
@@ -149,7 +177,7 @@ namespace RayTracer
             Cam = new Camera(LookFrom, LookAt, VectorUP, vfov, aspectRatio, aperture, distanceToFocus, 0, 1);
 
             Debug.WriteLine("Render start");
-            inProgress = true;
+            //inProgress = true;
             new Thread(() =>
             {
                 Bitmap image = new Bitmap(image_width, image_height);

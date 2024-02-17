@@ -13,6 +13,11 @@
     WindowState="Maximized"
     mc:Ignorable="d">
     <Window.Resources>
+        <SolidColorBrush x:Key="BaseBackground" Color="#212121"/>
+        <SolidColorBrush x:Key="BaseMainColor" Color="#4900ED"/>
+        <SolidColorBrush x:Key="HighlightMain" Color="#2E0094"/>
+        <SolidColorBrush x:Key="HighlightBackground" Color="#323232"/>
+
         <Style TargetType="{x:Type Button}">
             <Setter Property="Padding" Value="45,15" />
             <Setter Property="FontSize" Value="24" />
@@ -30,19 +35,17 @@
             <Setter Property="BorderThickness" Value="0,0,0,2" />
             <Setter Property="BorderBrush" Value="#4900ED" />
         </Style>
+        <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="FontSize" Value="24" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Margin" Value="10, 30, 10, 10" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="Foreground" Value="{StaticResource HighlightMain}" />
+        </Style>
 
         <!--Combo box-->
-        <SolidColorBrush x:Key="ComboBoxNormalBorderBrush" Color="#4900ED"/>
-        <SolidColorBrush x:Key="ComboBoxMouseOverBorderBrush" Color="Blue"/>
-        <SolidColorBrush x:Key="ComboBoxPressedBorderBrush" Color="#4900ED"/>
-        <SolidColorBrush x:Key="ComboBoxNormalBackground" Color="#212121"/>
-        <SolidColorBrush x:Key="ComboBoxMouseOverBackground" Color="#2E0094"/>
-        <SolidColorBrush x:Key="ComboBoxPressedBackground" Color="#212121"/>
-        <SolidColorBrush x:Key="ComboBoxNormalText" Color="#4900ED"/>
-        <SolidColorBrush x:Key="ComboBoxMouseOverText" Color="Pink"/>
-        <SolidColorBrush x:Key="ComboBoxPressedText" Color="#4900ED"/>
         <Style x:Key="CustomComboBoxStyle" TargetType="{x:Type ComboBox}">
-            <Setter Property="Background" Value="{StaticResource ComboBoxNormalBackground}"/>
+            <Setter Property="Background" Value="{StaticResource BaseBackground}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ComboBox}">
@@ -58,14 +61,18 @@
                                                             <ColumnDefinition />
                                                             <ColumnDefinition Width="20" />
                                                         </Grid.ColumnDefinitions>
-                                                        <Border x:Name="Border" Grid.ColumnSpan="2" Background="{StaticResource ComboBoxNormalBackground}" BorderBrush="{StaticResource ComboBoxNormalBorderBrush}" BorderThickness="4"/>
-                                                        <Border x:Name="Border2" Grid.Column="0" Margin="1" Background="{StaticResource ComboBoxNormalBackground}" BorderBrush="{StaticResource ComboBoxNormalBorderBrush}" BorderThickness="3, 3, 0, 3"/>
-                                                        <Path x:Name="Arrow" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Data="M 0 0 L 4 4 L 8 0 Z" Fill="#4900ED" Margin="3"/>
+                                                        <Border x:Name="Border" Grid.ColumnSpan="2" Background="{StaticResource BaseBackground}" BorderBrush="{StaticResource BaseMainColor}" BorderThickness="4"/>
+                                                        <Border x:Name="Border2" Grid.Column="0" Margin="1" Background="{StaticResource BaseBackground}" BorderBrush="{StaticResource BaseMainColor}" BorderThickness="3, 3, 0, 3"/>
+                                                        <Path x:Name="Arrow" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Data="M 0 0 L 4 4 L 8 0 Z" Fill="#4900ED">
+                                                            <Path.RenderTransform>
+                                                                <ScaleTransform ScaleX="1.5" ScaleY="2"/>
+                                                            </Path.RenderTransform>
+                                                        </Path>
                                                     </Grid>
                                                     <ControlTemplate.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="true">
-                                                            <Setter TargetName="Border2" Property="BorderBrush" Value="{StaticResource ComboBoxMouseOverBorderBrush}"/>
-                                                            <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource ComboBoxMouseOverBorderBrush}"/>
+                                                            <Setter TargetName="Border2" Property="BorderBrush" Value="{StaticResource HighlightMain}"/>
+                                                            <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource HighlightMain}"/>
                                                         </Trigger>
                                                         <!--<Trigger Property="IsPressed" Value="true">
                                                             <Setter TargetName="Border" Property="Background" Value="{StaticResource ComboBoxPressedBackground}"/>
@@ -86,7 +93,7 @@
                             <TextBox x:Name="PART_EditableTextBox" HorizontalContentAlignment="Left" IsReadOnly="True" Visibility="Hidden" VerticalContentAlignment="Center" Background="{TemplateBinding Background}"/>
                             <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="False" Focusable="False" PopupAnimation="Slide">
                                 <Grid x:Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
-                                    <Border x:Name="DropDownBorder" Background="{StaticResource ComboBoxNormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1"/>
+                                    <Border x:Name="DropDownBorder" Background="{StaticResource BaseBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1"/>
                                     <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
                                         <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" HorizontalAlignment="Stretch"/>
                                     </ScrollViewer>
@@ -104,9 +111,32 @@
                                 <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
                             </Trigger>
                             <Trigger Property="IsFocused" Value="true">
-                                <Setter Property="Background" Value="{StaticResource ComboBoxPressedBackground}" TargetName="DropDownBorder"/>
-                                <Setter Property="BorderBrush" Value="{StaticResource ComboBoxPressedBorderBrush}" TargetName="DropDownBorder"/>
-                                <Setter Property="Foreground" Value="{StaticResource ComboBoxPressedText}" />
+                                <Setter Property="Background" Value="{StaticResource HighlightBackground}" TargetName="DropDownBorder"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource HighlightMain}" TargetName="DropDownBorder"/>
+                                <Setter Property="Foreground" Value="{StaticResource HighlightMain}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style for the RadioButton -->
+        <Style x:Key="TextRadioButtonStyle" TargetType="RadioButton">
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="Foreground" Value="{StaticResource BaseMainColor}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <TextBlock Text="{TemplateBinding Content}" Padding="5" HorizontalAlignment="Center"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Foreground" Value="#8A67D2"/>
+                                <Setter Property="Background" Value="{StaticResource HighlightBackground}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="{StaticResource HighlightBackground}"/>
+                                <Setter Property="Background" Value="DarkGray"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -115,7 +145,7 @@
         </Style>
 
     </Window.Resources>
-    
+
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="8*" />
@@ -149,29 +179,14 @@
             Grid.Column="1"
             Click="Save_Click"
             Content="Save Image" />
-        <!--<Button
-            x:Name="Test"
+        <!--{Binding RenderProgress}-->
+        <Button
+            x:Name="Settings"
             Grid.Row="1"
             Grid.Column="2"
-            Click="Test_Click"
-            Content="{Binding RenderProgress}" />-->
-        <!--<Setter Property="FontSize" Value="24" />
-        <Setter Property="Margin" Value="10" />
-        <Setter Property="Background" Value="#212121" />
-        <Setter Property="Foreground" Value="#4900ED" />
-        <Setter Property="BorderThickness" Value="5" />
-        <Setter Property="BorderBrush" Value="#4900ED" />-->
-        <ComboBox 
-            Grid.Row="1"
-            Grid.Column="2"
-            Style="{StaticResource CustomComboBoxStyle}"
-            Margin="10"
-            FontSize="24"
-            >
-            <ComboBoxItem Name="Scene1">Scene1</ComboBoxItem>
-            <ComboBoxItem Name="Scene2">Scene2</ComboBoxItem>
-            <ComboBoxItem Name="Scene3">Scene3</ComboBoxItem>
-        </ComboBox>
+            Click="OpenSettings_Click"
+            Content="Settings" />
+
         <ProgressBar
             x:Name="RenderProgress"
             Grid.Row="1"
@@ -184,5 +199,64 @@
             Maximum="100"
             Minimum="0"
             Value="{Binding RenderProgress}" />
+
+        <Popup x:Name="SettingsPopup" IsOpen="False" Placement="Center">
+            <Border Background="#212121" BorderBrush="#4900ED" BorderThickness="5">
+                <StackPanel Width="400" Height="500" Margin="10">
+                    <!--<TextBlock Text="Settings" FontSize="24" FontWeight="Bold"/>-->
+                    <StackPanel>
+                        <TextBlock Text="Scene" />
+                        <ComboBox 
+                            Name="SceneSelect"
+                            Width="300"
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            Style="{StaticResource CustomComboBoxStyle}"
+                            Margin="10"
+                            FontSize="24"
+                            Background="#212121"
+                            Foreground="#4900ED"
+                            SelectedIndex="1"
+                            >
+                            <ComboBoxItem Name="Scene1">Marbles</ComboBoxItem>
+                            <ComboBoxItem Name="Scene2">Material Preview</ComboBoxItem>
+                            <ComboBoxItem Name="Scene3">Light emmision</ComboBoxItem>
+                            <ComboBoxItem Name="Scene4">Focus Showcase</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!--<Border BorderThickness="0,0,0,3"
+                          BorderBrush="{StaticResource BaseMainColor}"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Top"
+                          SnapsToDevicePixels="True" />-->
+
+
+                    <StackPanel>
+                        <TextBlock Text="Quality" />
+                        <StackPanel x:Name="QualityRadio">
+                            <RadioButton GroupName="Quality" Content="Low" Style="{StaticResource TextRadioButtonStyle}" Width="150" Height="30"/>
+                            <RadioButton GroupName="Quality" Content="Medium" Style="{StaticResource TextRadioButtonStyle}" Width="100" Height="30" IsChecked="True"/>
+                            <RadioButton GroupName="Quality" Content="High" Style="{StaticResource TextRadioButtonStyle}" Width="100" Height="30"/>
+                        </StackPanel>
+
+                        <!--<Border BorderThickness="0,0,0,3"
+                              BorderBrush="{StaticResource BaseMainColor}"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Top"
+                              SnapsToDevicePixels="True" />-->
+
+
+                        <TextBlock Text="Imadge width" />
+                        <StackPanel x:Name="ImageWidth">
+                            <RadioButton GroupName="Width" Content="400 px" Style="{StaticResource TextRadioButtonStyle}" Width="150" Height="30"/>
+                            <RadioButton GroupName="Width" Content="600 px" Style="{StaticResource TextRadioButtonStyle}" Width="100" Height="30" IsChecked="True"/>
+                            <RadioButton GroupName="Width" Content="1080 px" Style="{StaticResource TextRadioButtonStyle}" Width="100" Height="30"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                </StackPanel>
+            </Border>
+        </Popup>
     </Grid>
 </Window>
