@@ -18,7 +18,7 @@ namespace RayTracer
 {
     internal class Render : INotifyPropertyChanged
     {
-        Random rnd;
+        Random rnd; bool inProgress = false;
         public event PropertyChangedEventHandler PropertyChanged;
         private double _renderProgress = 0;
         public double RenderProgress
@@ -26,7 +26,7 @@ namespace RayTracer
             get { return _renderProgress; }
             set
             {
-                _renderProgress = value;
+                _renderProgress = Math.Round(value, 0);
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RenderProgress"));
                 //Debug.WriteLine("Progress {0}", value);
             }
@@ -59,7 +59,8 @@ namespace RayTracer
 
         public void Start(int scene)
         {
-            
+            if (inProgress) return; // failsafe
+
             switch (scene)
             {
                 case 1:
@@ -148,6 +149,7 @@ namespace RayTracer
             Cam = new Camera(LookFrom, LookAt, VectorUP, vfov, aspectRatio, aperture, distanceToFocus, 0, 1);
 
             Debug.WriteLine("Render start");
+            inProgress = true;
             new Thread(() =>
             {
                 Bitmap image = new Bitmap(image_width, image_height);
@@ -158,6 +160,7 @@ namespace RayTracer
 
                 Render_image.Dispatcher.Invoke(() => Render_image.Source = BitmapToImageSource(img));
                 Result = img; // save Bitmap in a variable for saving into a file
+                inProgress = false;
 
             }).Start();
         }

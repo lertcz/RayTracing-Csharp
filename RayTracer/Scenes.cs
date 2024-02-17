@@ -213,19 +213,22 @@ namespace RayTracer
             Material Glass = new Dielectric(1.5);
             Material Checker = new Lambertian(new CheckerTexture(new Vec3(.9, .9, .9), new Vec3(.1, .1, .1), .1));
             DiffuseLight Light = new DiffuseLight(new Vec3(1, 1, 1) * 30);
-            
+
+            //Objects.Add(new XZRect(213, 343, 227, 332, 554, Light));
             Objects.Add(new YZRect(0, 555, 0, 555, 555, Checker)); //left
             Objects.Add(new YZRect(0, 555, 0, 555, -.1, Checker)); // right
-            //Objects.Add(new XZRect(213, 343, 227, 332, 554, Light));
-            Objects.Add(new XZRect(0, 555, 0, 555, -.1, Checker)); // bottom
+            Objects.Add(new XZRect(0, 555, 0, 555, .1, Checker)); // bottom
             Objects.Add(new XZRect(0, 555, 0, 555, 555, Checker)); // top
-            Objects.Add(new XYRect(0, 555, 0, 555, 555, Checker)); // back
-            
-            //Objects.Add(new XYRect(0, 555, 0, 555, -.1, Checker)); // front test
+            Objects.Add(new XYRect(-.1, 555, 0, 555, 555, Checker)); // back
 
-            Objects.Add(new Sphere(new Vec3(278, 378, 0), 50, Glass));
-            Objects.Add(new Sphere(new Vec3(278, 278, 0), 50, Red));
-            Objects.Add(new Sphere(new Vec3(278, 178, 0), 50, Metal));
+            //Objects.Add(new XYRect(0, 555, 0, 555, -700, Checker)); // front test
+            Hittable box1 = new Box(new Vec3(0, 0, 0), new Vec3(555, 555, 1), White);
+            box1 = new Translate(box1, new Vec3(0, 0, -800));
+            Objects.Add(box1);
+
+            Objects.Add(new Sphere(new Vec3(278, 328, 0), 50, Metal));
+            Objects.Add(new Sphere(new Vec3(278, 228, 0), 50, Red));
+            Objects.Add(new Sphere(new Vec3(278, 128, 0), 50, Glass));
 
             //Hittable box1 = new Box(new Vec3(0, 0, 0), new Vec3(165, 330, 165), White);
             //box1 = new RotateY(box1, 15);

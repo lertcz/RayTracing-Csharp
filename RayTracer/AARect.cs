@@ -27,7 +27,7 @@ namespace RayTracer
 
         public override bool Hit(Ray r, double tMin, double tMax, ref HitRecord rec)
         {
-            rec = null;
+            //rec = null;
 
             double t = (k - r.Origin.z) / r.Direction.z;
             if (t < tMin || t > tMax)
@@ -78,7 +78,7 @@ namespace RayTracer
 
         public override bool Hit(Ray r, double tMin, double tMax, ref HitRecord rec)
         {
-            rec = null;
+            //rec = null;
 
             double t = (k - r.Origin.y) / r.Direction.y;
             if (t < tMin || t > tMax)
@@ -129,7 +129,7 @@ namespace RayTracer
 
         public override bool Hit(Ray r, double tMin, double tMax, ref HitRecord rec)
         {
-            rec = null;
+            //rec = null;
 
             double t = (k - r.Origin.x) / r.Direction.x;
             if (t < tMin || t > tMax)
