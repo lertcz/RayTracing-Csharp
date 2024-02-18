@@ -222,9 +222,9 @@ namespace RayTracer
             Objects.Add(new XYRect(-.1, 555, 0, 555, 555, Checker)); // back
 
             //Objects.Add(new XYRect(0, 555, 0, 555, -700, Checker)); // front test
-            Hittable box1 = new Box(new Vec3(0, 0, 0), new Vec3(555, 555, 1), White);
-            box1 = new Translate(box1, new Vec3(0, 0, -800));
-            Objects.Add(box1);
+            //Hittable box1 = new Box(new Vec3(0, 0, 0), new Vec3(555, 555, 1), White);
+            //box1 = new Translate(box1, new Vec3(0, 0, -800));
+            //Objects.Add(box1);
 
             Objects.Add(new Sphere(new Vec3(278, 328, 0), 50, Metal));
             Objects.Add(new Sphere(new Vec3(278, 228, 0), 50, Red));

@@ -43,9 +43,11 @@ namespace RayTracer
 
         private void Start_Click(object sender, RoutedEventArgs e)
         {
-            string Scene = "", Quality = "", Width = "";
+            SettingsPopup.IsOpen = false;
+            string Scene, Quality = "", Width = "";
 
-            Scene = SceneSelect.SelectedItem.ToString();
+            Scene = ((ComboBoxItem)SceneSelect.Items[SceneSelect.SelectedIndex]).Content.ToString();
+
             foreach (var child in QualityRadio.Children)
             {
                 if (child is RadioButton radioButton && radioButton.IsChecked == true)

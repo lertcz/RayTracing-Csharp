@@ -66,7 +66,6 @@ namespace RayTracer
 
     class Dielectric : Material
     {
-        private readonly static Random random = new Random();
         double IR { get; set; } // Index of refraction
 
         public Dielectric(double indexOfRefraction)
@@ -76,6 +75,9 @@ namespace RayTracer
 
         public override bool Scatter(Ray r, ref HitRecord rec, out Vec3 colorAttenuation, out Ray scattered)
         {
+            int seed = Guid.NewGuid().GetHashCode();
+            Random random = new Random(seed);
+
             colorAttenuation = new Vec3(1.0, 1.0, 1.0);
             double refractionRatio = rec.FrontFace ? (1.0 / IR) : IR;
 

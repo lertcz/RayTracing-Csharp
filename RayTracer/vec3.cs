@@ -12,7 +12,6 @@ namespace RayTracer
     internal class Vec3
     {
         public double[] val;
-        private readonly static Random random = new Random();
 
         public Vec3()
         {
@@ -97,11 +96,15 @@ namespace RayTracer
 
         public static Vec3 Random()
         {
+            int seed = Guid.NewGuid().GetHashCode();
+            Random random = new Random(seed);
             return new Vec3(random.NextDouble(), random.NextDouble(), random.NextDouble());
         }
         
         public static Vec3 Random(double min, double max)
         {
+            int seed = Guid.NewGuid().GetHashCode();
+            Random random = new Random(seed);
             return new Vec3(random.NextDouble(min, max), random.NextDouble(min, max), random.NextDouble(min, max));
         }
 
@@ -167,6 +170,8 @@ namespace RayTracer
 
         public static Vec3 RandomInUnitDisk()
         {
+            int seed = Guid.NewGuid().GetHashCode();
+            Random random = new Random(seed);
             double radius = Math.Sqrt(random.NextDouble());
             double theta = 2.0 * Math.PI * random.NextDouble();
             return new Vec3(radius * Math.Cos(theta), radius * Math.Sin(theta), 0);

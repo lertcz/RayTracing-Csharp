@@ -18,7 +18,8 @@ namespace RayTracer
 {
     internal class Render : INotifyPropertyChanged
     {
-        Random rnd; bool inProgress = false;
+        Random rnd; 
+        bool inProgress = false;
         public event PropertyChangedEventHandler PropertyChanged;
         private double _renderProgress = 0;
         public double RenderProgress
@@ -26,7 +27,7 @@ namespace RayTracer
             get { return _renderProgress; }
             set
             {
-                _renderProgress = Math.Round(value, 0);
+                _renderProgress = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RenderProgress"));
                 //Debug.WriteLine("Progress {0}", value);
             }
@@ -59,7 +60,7 @@ namespace RayTracer
 
         public void Start(string scene, string quality, string size)
         {
-            //if (inProgress) return; // failsafe
+            if (inProgress) return; // failsafe
 
             #region Settings
             if (quality == "Low")
@@ -69,13 +70,13 @@ namespace RayTracer
             }
             else if (quality == "Medium")
             {
-                MaxDepth = 50;
-                SamplesPerPixel = 150;
+                MaxDepth = 25;
+                SamplesPerPixel = 100;
             }
             else if (quality == "High")
             {
-                MaxDepth = 100;
-                SamplesPerPixel = 300;
+                MaxDepth = 50;
+                SamplesPerPixel = 200;
             }
 
             if (size == "400 px") image_width = 300;
@@ -83,11 +84,6 @@ namespace RayTracer
             else if (size == "1080 px") image_width = 1080;
             image_height = (int)(image_width / aspectRatio);
 
-            Console.WriteLine("---");
-            Console.WriteLine(MaxDepth);
-            Console.WriteLine(SamplesPerPixel);
-            Console.WriteLine(image_width);
-            //return;
             #endregion Settings
 
             switch (scene)
@@ -138,7 +134,7 @@ namespace RayTracer
                     vfov = 20;
                     aperture = 0.1f;
                     break;
-                case "Material Preview":
+                case "Material preview":
                     World = Scenes.LightShowcase();
                     Background = new Vec3(0.70, 0.80, 1.00);
                     aspectRatio = 1;
@@ -157,7 +153,7 @@ namespace RayTracer
                     LookAt = new Vec3(278, 278, 0);
                     vfov = 37;
                     break;
-                case "Focus Showcase":
+                case "Focus showcase":
                     break;
 
                 default:
@@ -168,7 +164,7 @@ namespace RayTracer
                     MaxDepth = 20;
                     image_height = (int)(image_width / aspectRatio);
                     MaxDepth = 20;
-                    SamplesPerPixel = 50;
+                    SamplesPerPixel = 200;
                     LookFrom = new Vec3(278, 278, -800);
                     LookAt = new Vec3(278, 278, 0);
                     vfov = 37;
@@ -177,7 +173,7 @@ namespace RayTracer
             Cam = new Camera(LookFrom, LookAt, VectorUP, vfov, aspectRatio, aperture, distanceToFocus, 0, 1);
 
             Debug.WriteLine("Render start");
-            //inProgress = true;
+            inProgress = true;
             new Thread(() =>
             {
                 Bitmap image = new Bitmap(image_width, image_height);
@@ -198,6 +194,7 @@ namespace RayTracer
             Bitmap image = new Bitmap(image_width, image_height);
             RenderProgress = 0;
 
+                rnd = new Random();
             for (double y = image_height - 1; y >= 0; --y)
             {
                 for (double x = 0; x < image_width; ++x)
@@ -205,7 +202,7 @@ namespace RayTracer
                     Vec3 PixelColor = new Vec3(0, 0, 0);
                     for (int s = 0; s < SamplesPerPixel; ++s)
                     {
-                        rnd = new Random();
+                        
                         double u = (x + rnd.NextDouble(0.0, 1.0)) / (image_width - 1);
                         double v = (y + rnd.NextDouble(0.0, 1.0)) / (image_height - 1);
                         Ray r = Cam.GetRay(u, v);

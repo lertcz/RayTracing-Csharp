@@ -207,7 +207,7 @@
                     <StackPanel>
                         <TextBlock Text="Scene" />
                         <ComboBox 
-                            Name="SceneSelect"
+                            x:Name="SceneSelect"
                             Width="300"
                             Grid.Row="1"
                             Grid.Column="2"
@@ -218,10 +218,10 @@
                             Foreground="#4900ED"
                             SelectedIndex="1"
                             >
-                            <ComboBoxItem Name="Scene1">Marbles</ComboBoxItem>
-                            <ComboBoxItem Name="Scene2">Material Preview</ComboBoxItem>
-                            <ComboBoxItem Name="Scene3">Light emmision</ComboBoxItem>
-                            <ComboBoxItem Name="Scene4">Focus Showcase</ComboBoxItem>
+                            <ComboBoxItem>Marbles</ComboBoxItem>
+                            <ComboBoxItem>Material preview</ComboBoxItem>
+                            <ComboBoxItem>Light emmision</ComboBoxItem>
+                            <ComboBoxItem>Focus showcase</ComboBoxItem>
                         </ComboBox>
                     </StackPanel>
 
@@ -235,8 +235,8 @@
                     <StackPanel>
                         <TextBlock Text="Quality" />
                         <StackPanel x:Name="QualityRadio">
-                            <RadioButton GroupName="Quality" Content="Low" Style="{StaticResource TextRadioButtonStyle}" Width="150" Height="30"/>
-                            <RadioButton GroupName="Quality" Content="Medium" Style="{StaticResource TextRadioButtonStyle}" Width="100" Height="30" IsChecked="True"/>
+                            <RadioButton GroupName="Quality" Content="Low" Style="{StaticResource TextRadioButtonStyle}" Width="150" Height="30" IsChecked="True"/>
+                            <RadioButton GroupName="Quality" Content="Medium" Style="{StaticResource TextRadioButtonStyle}" Width="100" Height="30"/>
                             <RadioButton GroupName="Quality" Content="High" Style="{StaticResource TextRadioButtonStyle}" Width="100" Height="30"/>
                         </StackPanel>
 
@@ -249,8 +249,8 @@
 
                         <TextBlock Text="Imadge width" />
                         <StackPanel x:Name="ImageWidth">
-                            <RadioButton GroupName="Width" Content="400 px" Style="{StaticResource TextRadioButtonStyle}" Width="150" Height="30"/>
-                            <RadioButton GroupName="Width" Content="600 px" Style="{StaticResource TextRadioButtonStyle}" Width="100" Height="30" IsChecked="True"/>
+                            <RadioButton GroupName="Width" Content="400 px" Style="{StaticResource TextRadioButtonStyle}" Width="150" Height="30" IsChecked="True"/>
+                            <RadioButton GroupName="Width" Content="600 px" Style="{StaticResource TextRadioButtonStyle}" Width="100" Height="30"/>
                             <RadioButton GroupName="Width" Content="1080 px" Style="{StaticResource TextRadioButtonStyle}" Width="100" Height="30"/>
                         </StackPanel>
                     </StackPanel>
