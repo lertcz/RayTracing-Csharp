@@ -18,7 +18,8 @@ namespace RayTracer
 {
     internal class Render : INotifyPropertyChanged
     {
-        Random rnd; bool inProgress = false;
+        Random rnd = new Random();
+        bool inProgress = false;
         public event PropertyChangedEventHandler PropertyChanged;
         private double _renderProgress = 0;
         public double RenderProgress
@@ -205,7 +206,7 @@ namespace RayTracer
                     Vec3 PixelColor = new Vec3(0, 0, 0);
                     for (int s = 0; s < SamplesPerPixel; ++s)
                     {
-                        rnd = new Random();
+                        
                         double u = (x + rnd.NextDouble(0.0, 1.0)) / (image_width - 1);
                         double v = (y + rnd.NextDouble(0.0, 1.0)) / (image_height - 1);
                         Ray r = Cam.GetRay(u, v);
