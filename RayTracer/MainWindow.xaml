@@ -13,10 +13,10 @@
     WindowState="Maximized"
     mc:Ignorable="d">
     <Window.Resources>
-        <SolidColorBrush x:Key="BaseBackground" Color="#212121"/>
-        <SolidColorBrush x:Key="BaseMainColor" Color="#4900ED"/>
-        <SolidColorBrush x:Key="HighlightMain" Color="#2E0094"/>
-        <SolidColorBrush x:Key="HighlightBackground" Color="#323232"/>
+        <SolidColorBrush x:Key="BaseBackground" Color="#212121" />
+        <SolidColorBrush x:Key="BaseMainColor" Color="#4900ED" />
+        <SolidColorBrush x:Key="HighlightMain" Color="#2E0094" />
+        <SolidColorBrush x:Key="HighlightBackground" Color="#323232" />
 
         <Style TargetType="{x:Type Button}">
             <Setter Property="Padding" Value="45,15" />
@@ -38,19 +38,24 @@
         <Style TargetType="{x:Type TextBlock}">
             <Setter Property="FontSize" Value="24" />
             <Setter Property="FontWeight" Value="Bold" />
-            <Setter Property="Margin" Value="10, 30, 10, 10" />
+            <Setter Property="Margin" Value="10,30,10,10" />
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="Foreground" Value="{StaticResource HighlightMain}" />
         </Style>
 
-        <!--Combo box-->
+        <!--  Combo box  -->
         <Style x:Key="CustomComboBoxStyle" TargetType="{x:Type ComboBox}">
-            <Setter Property="Background" Value="{StaticResource BaseBackground}"/>
+            <Setter Property="Background" Value="{StaticResource BaseBackground}" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ComboBox}">
                         <Grid>
-                            <ToggleButton x:Name="ToggleButton" Grid.Column="2" Focusable="false" ClickMode="Press" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                            <ToggleButton
+                                x:Name="ToggleButton"
+                                Grid.Column="2"
+                                ClickMode="Press"
+                                Focusable="false"
+                                IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
                                 <ToggleButton.Style>
                                     <Style TargetType="ToggleButton">
                                         <Setter Property="Template">
@@ -61,18 +66,35 @@
                                                             <ColumnDefinition />
                                                             <ColumnDefinition Width="20" />
                                                         </Grid.ColumnDefinitions>
-                                                        <Border x:Name="Border" Grid.ColumnSpan="2" Background="{StaticResource BaseBackground}" BorderBrush="{StaticResource BaseMainColor}" BorderThickness="4"/>
-                                                        <Border x:Name="Border2" Grid.Column="0" Margin="1" Background="{StaticResource BaseBackground}" BorderBrush="{StaticResource BaseMainColor}" BorderThickness="3, 3, 0, 3"/>
-                                                        <Path x:Name="Arrow" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Data="M 0 0 L 4 4 L 8 0 Z" Fill="#4900ED">
+                                                        <Border
+                                                            x:Name="Border"
+                                                            Grid.ColumnSpan="2"
+                                                            Background="{StaticResource BaseBackground}"
+                                                            BorderBrush="{StaticResource BaseMainColor}"
+                                                            BorderThickness="4" />
+                                                        <Border
+                                                            x:Name="Border2"
+                                                            Grid.Column="0"
+                                                            Margin="1"
+                                                            Background="{StaticResource BaseBackground}"
+                                                            BorderBrush="{StaticResource BaseMainColor}"
+                                                            BorderThickness="3,3,0,3" />
+                                                        <Path
+                                                            x:Name="Arrow"
+                                                            Grid.Column="1"
+                                                            HorizontalAlignment="Left"
+                                                            VerticalAlignment="Center"
+                                                            Data="M 0 0 L 4 4 L 8 0 Z"
+                                                            Fill="#4900ED">
                                                             <Path.RenderTransform>
-                                                                <ScaleTransform ScaleX="1.5" ScaleY="2"/>
+                                                                <ScaleTransform ScaleX="1.5" ScaleY="2" />
                                                             </Path.RenderTransform>
                                                         </Path>
                                                     </Grid>
                                                     <ControlTemplate.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="true">
-                                                            <Setter TargetName="Border2" Property="BorderBrush" Value="{StaticResource HighlightMain}"/>
-                                                            <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource HighlightMain}"/>
+                                                            <Setter TargetName="Border2" Property="BorderBrush" Value="{StaticResource HighlightMain}" />
+                                                            <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource HighlightMain}" />
                                                         </Trigger>
                                                         <!--<Trigger Property="IsPressed" Value="true">
                                                             <Setter TargetName="Border" Property="Background" Value="{StaticResource ComboBoxPressedBackground}"/>
@@ -80,7 +102,7 @@
                                                             <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource ComboBoxPressedBorderBrush}"/>
                                                         </Trigger>-->
                                                         <Trigger Property="IsEnabled" Value="False">
-                                                            <Setter TargetName="Arrow" Property="Fill" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                                            <Setter TargetName="Arrow" Property="Fill" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
                                                         </Trigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
@@ -89,30 +111,61 @@
                                     </Style>
                                 </ToggleButton.Style>
                             </ToggleButton>
-                            <ContentPresenter x:Name="ContentSite" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" Content="{TemplateBinding SelectionBoxItem}" ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" HorizontalAlignment="Center" IsHitTestVisible="False" Margin="3,3,23,3" VerticalAlignment="Center"/>
-                            <TextBox x:Name="PART_EditableTextBox" HorizontalContentAlignment="Left" IsReadOnly="True" Visibility="Hidden" VerticalContentAlignment="Center" Background="{TemplateBinding Background}"/>
-                            <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="False" Focusable="False" PopupAnimation="Slide">
-                                <Grid x:Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
-                                    <Border x:Name="DropDownBorder" Background="{StaticResource BaseBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1"/>
+                            <ContentPresenter
+                                x:Name="ContentSite"
+                                Margin="3,3,23,3"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Content="{TemplateBinding SelectionBoxItem}"
+                                ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}"
+                                ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                IsHitTestVisible="False" />
+                            <TextBox
+                                x:Name="PART_EditableTextBox"
+                                HorizontalContentAlignment="Left"
+                                VerticalContentAlignment="Center"
+                                Background="{TemplateBinding Background}"
+                                IsReadOnly="True"
+                                Visibility="Hidden" />
+                            <Popup
+                                x:Name="Popup"
+                                AllowsTransparency="False"
+                                Focusable="False"
+                                IsOpen="{TemplateBinding IsDropDownOpen}"
+                                Placement="Bottom"
+                                PopupAnimation="Slide">
+                                <Grid
+                                    x:Name="DropDown"
+                                    MinWidth="{TemplateBinding ActualWidth}"
+                                    MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                    SnapsToDevicePixels="True">
+                                    <Border
+                                        x:Name="DropDownBorder"
+                                        Background="{StaticResource BaseBackground}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="1" />
                                     <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
-                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" HorizontalAlignment="Stretch"/>
+                                        <StackPanel
+                                            HorizontalAlignment="Stretch"
+                                            IsItemsHost="True"
+                                            KeyboardNavigation.DirectionalNavigation="Contained" />
                                     </ScrollViewer>
                                 </Grid>
                             </Popup>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="HasItems" Value="false">
-                                <Setter Property="MinHeight" Value="95" TargetName="DropDownBorder"/>
+                                <Setter TargetName="DropDownBorder" Property="MinHeight" Value="95" />
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="false">
-                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
                             </Trigger>
                             <Trigger Property="IsGrouping" Value="true">
-                                <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+                                <Setter Property="ScrollViewer.CanContentScroll" Value="false" />
                             </Trigger>
                             <Trigger Property="IsFocused" Value="true">
-                                <Setter Property="Background" Value="{StaticResource HighlightBackground}" TargetName="DropDownBorder"/>
-                                <Setter Property="BorderBrush" Value="{StaticResource HighlightMain}" TargetName="DropDownBorder"/>
+                                <Setter TargetName="DropDownBorder" Property="Background" Value="{StaticResource HighlightBackground}" />
+                                <Setter TargetName="DropDownBorder" Property="BorderBrush" Value="{StaticResource HighlightMain}" />
                                 <Setter Property="Foreground" Value="{StaticResource HighlightMain}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
@@ -121,22 +174,25 @@
             </Setter>
         </Style>
 
-        <!-- Style for the RadioButton -->
+        <!--  Style for the RadioButton  -->
         <Style x:Key="TextRadioButtonStyle" TargetType="RadioButton">
             <Setter Property="FontSize" Value="18" />
             <Setter Property="Foreground" Value="{StaticResource BaseMainColor}" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="RadioButton">
-                        <TextBlock Text="{TemplateBinding Content}" Padding="5" HorizontalAlignment="Center"/>
+                        <TextBlock
+                            Padding="5"
+                            HorizontalAlignment="Center"
+                            Text="{TemplateBinding Content}" />
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsChecked" Value="True">
-                                <Setter Property="Foreground" Value="#8A67D2"/>
-                                <Setter Property="Background" Value="{StaticResource HighlightBackground}"/>
+                                <Setter Property="Foreground" Value="#8A67D2" />
+                                <Setter Property="Background" Value="{StaticResource HighlightBackground}" />
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Foreground" Value="{StaticResource HighlightBackground}"/>
-                                <Setter Property="Background" Value="DarkGray"/>
+                                <Setter Property="Foreground" Value="{StaticResource HighlightBackground}" />
+                                <Setter Property="Background" Value="DarkGray" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -179,7 +235,7 @@
             Grid.Column="1"
             Click="Save_Click"
             Content="Save Image" />
-        <!--{Binding RenderProgress}-->
+        <!--  {Binding RenderProgress}  -->
         <Button
             x:Name="Settings"
             Grid.Row="1"
@@ -200,27 +256,35 @@
             Minimum="0"
             Value="{Binding RenderProgress}" />
 
-        <Popup x:Name="SettingsPopup" IsOpen="False" Placement="Center">
-            <Border Background="#212121" BorderBrush="#4900ED" BorderThickness="5">
-                <StackPanel Width="400" Height="500" Margin="10">
+        <Popup
+            x:Name="SettingsPopup"
+            IsOpen="False"
+            Placement="Center">
+            <Border
+                Background="#212121"
+                BorderBrush="#4900ED"
+                BorderThickness="5">
+                <StackPanel
+                    Width="400"
+                    Height="500"
+                    Margin="10">
                     <!--<TextBlock Text="Settings" FontSize="24" FontWeight="Bold"/>-->
                     <StackPanel>
                         <TextBlock Text="Scene" />
-                        <ComboBox 
+                        <ComboBox
                             x:Name="SceneSelect"
-                            Width="300"
                             Grid.Row="1"
                             Grid.Column="2"
-                            Style="{StaticResource CustomComboBoxStyle}"
+                            Width="300"
                             Margin="10"
-                            FontSize="24"
                             Background="#212121"
+                            FontSize="24"
                             Foreground="#4900ED"
-                            SelectedIndex="1"
-                            >
-                            <ComboBoxItem>Marbles</ComboBoxItem>
+                            SelectedIndex="2"
+                            Style="{StaticResource CustomComboBoxStyle}">
                             <ComboBoxItem>Material preview</ComboBoxItem>
-                            <ComboBoxItem>Light emmision</ComboBoxItem>
+                            <ComboBoxItem>Material preview (Dark)</ComboBoxItem>
+                            <ComboBoxItem>Marbles</ComboBoxItem>
                             <ComboBoxItem>Focus showcase</ComboBoxItem>
                         </ComboBox>
                     </StackPanel>
@@ -235,9 +299,25 @@
                     <StackPanel>
                         <TextBlock Text="Quality" />
                         <StackPanel x:Name="QualityRadio">
-                            <RadioButton GroupName="Quality" Content="Low" Style="{StaticResource TextRadioButtonStyle}" Width="150" Height="30" IsChecked="True"/>
-                            <RadioButton GroupName="Quality" Content="Medium" Style="{StaticResource TextRadioButtonStyle}" Width="100" Height="30"/>
-                            <RadioButton GroupName="Quality" Content="High" Style="{StaticResource TextRadioButtonStyle}" Width="100" Height="30"/>
+                            <RadioButton
+                                Width="150"
+                                Height="30"
+                                Content="Low"
+                                GroupName="Quality"
+                                IsChecked="True"
+                                Style="{StaticResource TextRadioButtonStyle}" />
+                            <RadioButton
+                                Width="100"
+                                Height="30"
+                                Content="Medium"
+                                GroupName="Quality"
+                                Style="{StaticResource TextRadioButtonStyle}" />
+                            <RadioButton
+                                Width="100"
+                                Height="30"
+                                Content="High"
+                                GroupName="Quality"
+                                Style="{StaticResource TextRadioButtonStyle}" />
                         </StackPanel>
 
                         <!--<Border BorderThickness="0,0,0,3"
@@ -249,9 +329,25 @@
 
                         <TextBlock Text="Imadge width" />
                         <StackPanel x:Name="ImageWidth">
-                            <RadioButton GroupName="Width" Content="400 px" Style="{StaticResource TextRadioButtonStyle}" Width="150" Height="30" IsChecked="True"/>
-                            <RadioButton GroupName="Width" Content="600 px" Style="{StaticResource TextRadioButtonStyle}" Width="100" Height="30"/>
-                            <RadioButton GroupName="Width" Content="1080 px" Style="{StaticResource TextRadioButtonStyle}" Width="100" Height="30"/>
+                            <RadioButton
+                                Width="150"
+                                Height="30"
+                                Content="400 px"
+                                GroupName="Width"
+                                IsChecked="True"
+                                Style="{StaticResource TextRadioButtonStyle}" />
+                            <RadioButton
+                                Width="100"
+                                Height="30"
+                                Content="600 px"
+                                GroupName="Width"
+                                Style="{StaticResource TextRadioButtonStyle}" />
+                            <RadioButton
+                                Width="100"
+                                Height="30"
+                                Content="1080 px"
+                                GroupName="Width"
+                                Style="{StaticResource TextRadioButtonStyle}" />
                         </StackPanel>
                     </StackPanel>
 

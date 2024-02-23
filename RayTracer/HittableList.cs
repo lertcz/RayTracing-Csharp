@@ -22,6 +22,11 @@ namespace RayTracer
             Objects.Add(obj);
         }
 
+        public void Extend(List<Hittable> objs)
+        {
+            Objects.AddRange(objs);
+        }
+
         public override bool BoundingBox(double time0, double time1, out AABB outputBox)
         {
             if (Objects.Count == 0)

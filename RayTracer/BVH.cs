@@ -21,9 +21,7 @@ namespace RayTracer
             Comparison<Hittable> comparator = (a, b) => (axis == 0) ? BoxXCompare(a, b)
                                                       : (axis == 1) ? BoxYCompare(a, b)
                                                       : BoxZCompare(a, b);
-            
-            
-            //BoxCompare(a, b, axis); // fix this
+
 
             int objectSpan = end - start;
 
@@ -46,13 +44,14 @@ namespace RayTracer
             }
             else
             {
-                List<Hittable> sortedSublist = objects.GetRange(start, end);
+                List<Hittable> sortedSublist = objects.GetRange(start, objectSpan);
                 sortedSublist.Sort(comparator);
 
-                objects.RemoveRange(start, end);
+                objects.RemoveRange(start, objectSpan);
                 objects.InsertRange(start, sortedSublist);
 
                 int mid = start + objectSpan / 2;
+                Console.WriteLine(": " + mid.ToString());
                 Left = new BVH(objects, start, mid, time0, time1);
                 Right = new BVH(objects, mid, end, time0, time1);
             }
@@ -87,7 +86,7 @@ namespace RayTracer
 
         public override bool Hit(Ray r, double tMin, double tMax, ref HitRecord rec)
         {
-            rec = null;
+            //rec = null;
 
             if (!Box.Hit(r, tMin, tMax))  return false;
 

@@ -24,6 +24,8 @@ namespace RayTracer
             CheckerTexture checker = new CheckerTexture(color1, color2);
             World.Add(new Sphere(new Vec3(0, -1000, 0), 1000, new Lambertian(checker)));
 
+            HittableList Marbles = new HittableList();
+
             for (int a = -11; a < 11; a++)
             {
                 for (int b = -11; b < 11; b++)
@@ -37,23 +39,25 @@ namespace RayTracer
                         {
                             // diffuse
                             Vec3 albedo = Vec3.Random() * Vec3.Random();
-                            World.Add(new Sphere(center, .2, new Lambertian(albedo)));
+                            Marbles.Add(new Sphere(center, .2, new Lambertian(albedo)));
                         }
                         else if (chooseMaterial < .95)
                         {
                             // metal
                             Vec3 albedo = Vec3.Random(0.5, 1);
                             double fuzz = random.NextDouble(0, .5);
-                            World.Add(new Sphere(center, .2, new Metal(albedo, fuzz)));
+                            Marbles.Add(new Sphere(center, .2, new Metal(albedo, fuzz)));
                         }
                         else
                         {
                             // glass
-                            World.Add(new Sphere(center, .2, new Dielectric(1.5)));
+                            Marbles.Add(new Sphere(center, .2, new Dielectric(1.5)));
                         }
                     }
                 }
             }
+
+            World.Add(new BVH(Marbles.Objects, 0, Marbles.Objects.Count, 0, 1));
 
             World.Add(new Sphere(new Vec3(0, 1, 0), 1, new Dielectric(1.5)));
             World.Add(new Sphere(new Vec3(-4, 1, 0), 1, new Lambertian(new Vec3(.4, .2, .1))));
@@ -205,7 +209,7 @@ namespace RayTracer
             return Objects;
         }
 
-        public static HittableList LightShowcase()
+        public static HittableList MaterialShowcase()
         {
             HittableList Objects = new HittableList();
 
@@ -243,6 +247,33 @@ namespace RayTracer
             //box2 = new RotateY(box2, -18);
             //box2 = new Translate(box2, new Vec3(130, 0, 65));
             //Objects.Add(box2);
+
+            return Objects;
+        }
+
+        public static HittableList LightShowcase()
+        {
+            HittableList Objects = new HittableList();
+
+            Material Red = new Lambertian(new Vec3(.65, .05, .05));
+            Material White = new Lambertian(new Vec3(.73, .73, .73));
+            Material Green = new Lambertian(new Vec3(.12, .45, .15));
+            Material Metal = new Metal(new Vec3(.7, .7, .7), .2);
+            Material Mirror = new Metal(new Vec3(.85, .85, .85), 0);
+            Material Glass = new Dielectric(1.5);
+            Material Checker = new Lambertian(new CheckerTexture(new Vec3(.9, .9, .9), new Vec3(.1, .1, .1), .1));
+            DiffuseLight Light = new DiffuseLight(new Vec3(1, 1, 1) * 30);
+
+            //Objects.Add(new XZRect(213, 343, 227, 332, 554, Light));
+            Objects.Add(new YZRect(0, 555, 0, 555, 555, Checker)); //left
+            Objects.Add(new YZRect(0, 555, 0, 555, -.1, Checker)); // right
+            Objects.Add(new XZRect(0, 555, 0, 555, .1, Checker)); // bottom
+            Objects.Add(new XZRect(0, 555, 0, 555, 555, Checker)); // top
+            Objects.Add(new XYRect(-.1, 555, 0, 555, 555, Checker)); // back
+
+            Objects.Add(new Sphere(new Vec3(278, 328, 0), 50, Metal));
+            Objects.Add(new Sphere(new Vec3(278, 228, 0), 50, Red));
+            Objects.Add(new Sphere(new Vec3(278, 128, 0), 50, Glass));
 
             return Objects;
         }
