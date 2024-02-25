@@ -8,15 +8,15 @@ namespace RayTracer
 {
     internal class BVH : Hittable
     {
-        private Hittable Left { get; }
-        private Hittable Right { get; }
-        private AABB Box { get; }
+        private Hittable Left;
+        private Hittable Right;
+        private AABB Box;
 
         public BVH(List<Hittable> srcObjects, int start, int end, double time0, double time1)
         {
             List<Hittable> objects = srcObjects.ToList();
 
-            int axis = new Random().Next(0, 3);
+            int axis = 1; //new Random().Next(0, 3);
             // 0 -> x, 1 -> y, 2 -> z
             Comparison<Hittable> comparator = (a, b) => (axis == 0) ? BoxXCompare(a, b)
                                                       : (axis == 1) ? BoxYCompare(a, b)
@@ -45,13 +45,12 @@ namespace RayTracer
             else
             {
                 List<Hittable> sortedSublist = objects.GetRange(start, objectSpan);
-                sortedSublist.Sort(comparator);
+                //sortedSublist.Sort(comparator);
 
-                objects.RemoveRange(start, objectSpan);
-                objects.InsertRange(start, sortedSublist);
+                //objects.RemoveRange(start, objectSpan);
+                //objects.InsertRange(start, sortedSublist);
 
-                int mid = start + objectSpan / 2;
-                Console.WriteLine(": " + mid.ToString());
+                int mid = start + objectSpan / 2;   
                 Left = new BVH(objects, start, mid, time0, time1);
                 Right = new BVH(objects, mid, end, time0, time1);
             }
@@ -86,11 +85,9 @@ namespace RayTracer
 
         public override bool Hit(Ray r, double tMin, double tMax, ref HitRecord rec)
         {
-            //rec = null;
-
             if (!Box.Hit(r, tMin, tMax))  return false;
 
-            return Left.Hit(r, tMin, tMax, ref rec) || Right.Hit(r, tMin, rec != null ? rec.T : tMax, ref rec);
+            return Left.Hit(r, tMin, tMax, ref rec) || Right.Hit(r, tMin, tMax, ref rec);
         }
 
         public override bool BoundingBox(double time0, double time1, out AABB outputBox)

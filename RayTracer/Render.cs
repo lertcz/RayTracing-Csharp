@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
@@ -45,7 +46,7 @@ namespace RayTracer
         static Vec3 LookFrom, LookAt;
         double vfov = 40.0;
         readonly static Vec3 VectorUP = new Vec3(0, 1, 0);
-        readonly static float distanceToFocus = 10f; //(LookFrom - LookAt).Length(); // auto focus
+        static float distanceToFocus = 10f; //(LookFrom - LookAt).Length(); // auto focus
         static float aperture = 0.0f;
         Camera Cam; // = new Camera(LookFrom, LookAt, VectorUP, 20, aspectRatio, aperture, distanceToFocus, 0, 1);
 
@@ -82,6 +83,7 @@ namespace RayTracer
             if (size == "400 px") image_width = 300;
             else if (size == "600 px") image_width = 600;
             else if (size == "1080 px") image_width = 1080;
+            aspectRatio = 16.0f/9.0f;
             image_height = (int)(image_width / aspectRatio);
 
             #endregion Settings
@@ -134,8 +136,16 @@ namespace RayTracer
                     vfov = 20;
                     aperture = 0.1f;
                     break;
+                case "Marbles (Blur)":
+                    World = Scenes.MotionBlurScene();
+                    Background = new Vec3(0.70, 0.80, 1.00);
+                    LookFrom = new Vec3(13, 2, 3);
+                    LookAt = new Vec3(0, 0, 0);
+                    vfov = 20;
+                    aperture = 0.1f;
+                    break;
                 case "Material preview":
-                    World = Scenes.LightShowcase();
+                    World = Scenes.MaterialShowcase();
                     Background = new Vec3(0.70, 0.80, 1.00);
                     aspectRatio = 1;
                     image_height = (int)(image_width / aspectRatio);
@@ -143,9 +153,18 @@ namespace RayTracer
                     LookAt = new Vec3(278, 278, 0);
                     vfov = 37;
                     break;
-                case "Light emmision":
-                    World = Scenes.LightShowcase();
+                case "Mirror room":
+                    World = Scenes.MirrorRoom();
                     Background = new Vec3(0.70, 0.80, 1.00);
+                    aspectRatio = 1;
+                    image_height = (int)(image_width / aspectRatio);
+                    LookFrom = new Vec3(278, 278, -200);
+                    LookAt = new Vec3(278, 278, 0);
+                    vfov = 75;
+                    break;
+                case "Material preview (Dark)":
+                    World = Scenes.MaterialLightShowcase();
+                    Background = new Vec3(0, 0, 0);
                     aspectRatio = 1;
                     image_height = (int)(image_width / aspectRatio);
                     SamplesPerPixel *= 4;
@@ -154,17 +173,20 @@ namespace RayTracer
                     vfov = 37;
                     break;
                 case "Focus showcase":
+                    World = Scenes.FocusShowcase();
+                    Background = new Vec3(.70, .80, 1.00);
+                    LookFrom = new Vec3(-3, 3, 2);
+                    LookAt = new Vec3(0, 0, -1);
+                    distanceToFocus = (float)(LookFrom - LookAt).Length();
+                    aperture = 1.5f;
+                    vfov = 20;
                     break;
 
                 default:
-                    World = Scenes.LightShowcase();
+                    World = Scenes.MaterialShowcase();
                     Background = new Vec3(0.70, 0.80, 1.00);
                     aspectRatio = 1;
-                    image_width = 300;
-                    MaxDepth = 20;
                     image_height = (int)(image_width / aspectRatio);
-                    MaxDepth = 20;
-                    SamplesPerPixel = 200;
                     LookFrom = new Vec3(278, 278, -800);
                     LookAt = new Vec3(278, 278, 0);
                     vfov = 37;
@@ -173,6 +195,8 @@ namespace RayTracer
             Cam = new Camera(LookFrom, LookAt, VectorUP, vfov, aspectRatio, aperture, distanceToFocus, 0, 1);
 
             Debug.WriteLine("Render start");
+            //var watch = System.Diagnostics.Stopwatch.StartNew();
+
             inProgress = true;
             new Thread(() =>
             {

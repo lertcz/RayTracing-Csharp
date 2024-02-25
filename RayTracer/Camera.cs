@@ -9,8 +9,6 @@ namespace RayTracer
 {
     internal class Camera
     {
-        private readonly static Random random = new Random();
-
         private readonly Vec3 Origin, Horizontal, Vertical, LowerLeftCorner;
 
         private readonly Vec3 w, u, v;
@@ -52,6 +50,9 @@ namespace RayTracer
         {
             Vec3 rd = lensRadius * Vec3.RandomInUnitDisk();
             Vec3 offset = u * rd.x + v * rd.y;
+
+            int seed = Guid.NewGuid().GetHashCode();
+            Random random = new Random(seed);
 
             return new Ray(
                 Origin + offset,

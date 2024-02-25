@@ -280,11 +280,12 @@
                             Background="#212121"
                             FontSize="24"
                             Foreground="#4900ED"
-                            SelectedIndex="2"
+                            SelectedIndex="0"
                             Style="{StaticResource CustomComboBoxStyle}">
                             <ComboBoxItem>Material preview</ComboBoxItem>
                             <ComboBoxItem>Material preview (Dark)</ComboBoxItem>
                             <ComboBoxItem>Marbles</ComboBoxItem>
+                            <ComboBoxItem>Marbles (Blur)</ComboBoxItem>
                             <ComboBoxItem>Focus showcase</ComboBoxItem>
                         </ComboBox>
                     </StackPanel>
