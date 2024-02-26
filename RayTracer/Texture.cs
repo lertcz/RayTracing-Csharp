@@ -10,6 +10,8 @@ using System.Windows.Media.Media3D;
 using System.Runtime.InteropServices;
 using System.Windows.Navigation;
 using System.IO; // for directory location
+using System.Windows.Media.Imaging;
+using System.Diagnostics;
 
 namespace RayTracer
 {
@@ -114,41 +116,34 @@ namespace RayTracer
         //ConcurrentDictionary<int, System.Drawing.Color> image = new ConcurrentDictionary<Tuple<int, int, Color>>(new Tuple<int, int, Color>[image_height * image_width]);
         private readonly ConcurrentDictionary<(int, int), Color> imageData = new ConcurrentDictionary<(int, int), Color>();
         private readonly int Height, Width;
-        private bool pathFailed = false;
 
         public ImageTexture(string filename)
         {
             // TODO better loading!! mb from blender :)
 
-            Console.WriteLine(Directory.GetParent(Environment.CurrentDirectory).Parent.FullName + "\\Images\\" + filename);
-            string path = Directory.GetParent(Environment.CurrentDirectory).Parent.FullName + "\\Images\\" + filename;
-            Console.WriteLine(path);
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", filename);
 
-            try
+            // File does not exist
+            if (!File.Exists(path)) return;
+
+            Bitmap tempImg = new Bitmap(path);
+            Height = tempImg.Height;
+            Width = tempImg.Width;
+            for (int h = 0; h < Height; h++)
             {
-                Bitmap tempImg = new Bitmap(path);
-                Height = tempImg.Height;
-                Width = tempImg.Width;
-                for (int h = 0; h < Height; h++)
+                for (int w = 0; w < Width; w++)
                 {
-                    for (int w = 0; w < Width; w++)
-                    {
-                        imageData[(w, h)] = tempImg.GetPixel(w, h);
-                    }
+                    imageData[(w, h)] = tempImg.GetPixel(w, h);
                 }
             }
-            catch (ArgumentException) {
-                pathFailed = true;
-            }
-
         }
 
         public override Vec3 Value(double u, double v, Vec3 p)
         {
             //return new Vec3(0, 1, 1);
-            
+
             // If we have no texture data, then return solid cyan as a debugging aid.
-            if (imageData.Count <= 0 || pathFailed) return new Vec3(0, 1, 1);
+            if (imageData.Count <= 0) return new Vec3(0, 1, 1);
 
             // Clamp input texture coordinates to [0,1] x [1,0]
             u = u.Clamp(0, 1);
