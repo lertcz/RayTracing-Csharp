@@ -40,7 +40,6 @@ namespace RayTracer
                             // diffuse
                             Vec3 albedo = Vec3.Random() * Vec3.Random();
                             World.Add(new Sphere(center, .2, new Lambertian(albedo)));
-                            //Marbles.Add(new Sphere(center, .2, new Lambertian(albedo)));
                         }
                         else if (chooseMaterial < .95)
                         {
@@ -48,19 +47,15 @@ namespace RayTracer
                             Vec3 albedo = Vec3.Random(0.5, 1);
                             double fuzz = random.NextDouble(0, .5);
                             World.Add(new Sphere(center, .2, new Metal(albedo, fuzz)));
-                            //Marbles.Add(new Sphere(center, .2, new Metal(albedo, fuzz)));
                         }
                         else
                         {
                             // glass
                             World.Add(new Sphere(center, .2, new Dielectric(1.5)));
-                            //Marbles.Add(new Sphere(center, .2, new Dielectric(1.5)));
                         }
                     }
                 }
             }
-
-            //World.Add(new BVH(Marbles.Objects, 0, Marbles.Objects.Count, 0, 1));
 
             World.Add(new Sphere(new Vec3(0, 1, 0), 1, new Dielectric(1.5)));
             World.Add(new Sphere(new Vec3(-4, 1, 0), 1, new Lambertian(new Vec3(.4, .2, .1))));
