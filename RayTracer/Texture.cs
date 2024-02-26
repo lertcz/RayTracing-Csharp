@@ -114,6 +114,7 @@ namespace RayTracer
         //ConcurrentDictionary<int, System.Drawing.Color> image = new ConcurrentDictionary<Tuple<int, int, Color>>(new Tuple<int, int, Color>[image_height * image_width]);
         private readonly ConcurrentDictionary<(int, int), Color> imageData = new ConcurrentDictionary<(int, int), Color>();
         private readonly int Height, Width;
+        private bool pathFailed = false;
 
         public ImageTexture(string filename)
         {
@@ -122,18 +123,24 @@ namespace RayTracer
             Console.WriteLine(Directory.GetParent(Environment.CurrentDirectory).Parent.FullName + "\\Images\\" + filename);
             string path = Directory.GetParent(Environment.CurrentDirectory).Parent.FullName + "\\Images\\" + filename;
             Console.WriteLine(path);
-            Bitmap tempImg = new Bitmap(path);
 
-            Height = tempImg.Height;
-            Width = tempImg.Width;
-
-            for (int h = 0; h < Height; h++)
+            try
             {
-                for (int w = 0; w < Width; w++)
+                Bitmap tempImg = new Bitmap(path);
+                Height = tempImg.Height;
+                Width = tempImg.Width;
+                for (int h = 0; h < Height; h++)
                 {
-                    imageData[(w, h)] = tempImg.GetPixel(w, h);
+                    for (int w = 0; w < Width; w++)
+                    {
+                        imageData[(w, h)] = tempImg.GetPixel(w, h);
+                    }
                 }
             }
+            catch (ArgumentException) {
+                pathFailed = true;
+            }
+
         }
 
         public override Vec3 Value(double u, double v, Vec3 p)
@@ -141,7 +148,7 @@ namespace RayTracer
             //return new Vec3(0, 1, 1);
             
             // If we have no texture data, then return solid cyan as a debugging aid.
-            if (imageData.Count <= 0) return new Vec3(0, 1, 1);
+            if (imageData.Count <= 0 || pathFailed) return new Vec3(0, 1, 1);
 
             // Clamp input texture coordinates to [0,1] x [1,0]
             u = u.Clamp(0, 1);
