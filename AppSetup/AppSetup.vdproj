@@ -15,7 +15,7 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_2961656C79D442C995FB964D5DBB9208"
+        "MsmKey" = "8:_0D0F840B7A1340A4BF5FDC328B65F386"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -27,32 +27,38 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_87137577C2624707875B1F3112FAD6F1"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_892090739D1B48A0BA5E49837A167403"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_98B3782A0AF54E6F97B9D1B2F6BE0BC4"
+        "MsmKey" = "8:_BD06A32BA34442C88D63000770405A20"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_C1CF86FFEAD94F5A8069595190E7E131"
+        "MsmKey" = "8:_EC2708043D2749A0A88D45BA16263DCB"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_548CB95B3B7F9F163ADD6D44377358EA"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_892090739D1B48A0BA5E49837A167403"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_548CB95B3B7F9F163ADD6D44377358EA"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -73,6 +79,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
         "Release"
         {
@@ -89,6 +103,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
+            }
         }
     }
     "Deployable"
@@ -118,9 +148,9 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2961656C79D442C995FB964D5DBB9208"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0D0F840B7A1340A4BF5FDC328B65F386"
             {
-            "SourcePath" = "8:..\\RayTracer\\Images\\Sun.jpg"
+            "SourcePath" = "8:..\\RayTracer\\ImageTextures\\Sun.jpg"
             "TargetName" = "8:Sun.jpg"
             "Tag" = "8:"
             "Folder" = "8:_6BDECB2221D444B7B0E5CDF83A2D2586"
@@ -169,9 +199,9 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_98B3782A0AF54E6F97B9D1B2F6BE0BC4"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_87137577C2624707875B1F3112FAD6F1"
             {
-            "SourcePath" = "8:..\\RayTracer\\Images\\Jupiter.jpg"
+            "SourcePath" = "8:..\\RayTracer\\ImageTextures\\Jupiter.jpg"
             "TargetName" = "8:Jupiter.jpg"
             "Tag" = "8:"
             "Folder" = "8:_6BDECB2221D444B7B0E5CDF83A2D2586"
@@ -189,12 +219,32 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C1CF86FFEAD94F5A8069595190E7E131"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BD06A32BA34442C88D63000770405A20"
             {
-            "SourcePath" = "8:..\\RayTracer\\Images\\earthmap.jpg"
+            "SourcePath" = "8:..\\RayTracer\\ImageTextures\\earthmap.jpg"
             "TargetName" = "8:earthmap.jpg"
             "Tag" = "8:"
             "Folder" = "8:_6BDECB2221D444B7B0E5CDF83A2D2586"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EC2708043D2749A0A88D45BA16263DCB"
+            {
+            "SourcePath" = "8:..\\RayTracer\\icon.ico"
+            "TargetName" = "8:icon.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_A476E45D757940A0827F830F67369834"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -277,7 +327,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:RayTracer"
         "ProductCode" = "8:{6741D617-E96D-47B6-93B4-3EA964D47342}"
-        "PackageCode" = "8:{9A89F32B-1A17-4A6B-A186-59828043B2B8}"
+        "PackageCode" = "8:{36BBE08B-D3DB-4D71-85B0-D701BE654BEA}"
         "UpgradeCode" = "8:{245CBFC5-0588-49F6-9B5C-EC4155271ABA}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
@@ -285,15 +335,15 @@
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
         "ProductVersion" = "8:1.0.0"
-        "Manufacturer" = "8:Default Company Name"
+        "Manufacturer" = "8:BeansINC"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
         "Title" = "8:RayTracerInstall"
         "Subject" = "8:"
-        "ARPCONTACT" = "8:BeansINC"
+        "ARPCONTACT" = "8:Mike"
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:OwO you caught PathOwOgen"
-        "ARPURLINFOABOUT" = "8:"
+        "ARPURLINFOABOUT" = "8:https://valveprism.com/"
         "ARPPRODUCTICON" = "8:"
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
@@ -408,7 +458,7 @@
             "Target" = "8:_892090739D1B48A0BA5E49837A167403"
             "Folder" = "8:_08AE263887184F768C8B8A3298880D00"
             "WorkingFolder" = "8:_A476E45D757940A0827F830F67369834"
-            "Icon" = "8:"
+            "Icon" = "8:_EC2708043D2749A0A88D45BA16263DCB"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_680D0B22D7294B088687D985D74787B2"
@@ -422,7 +472,7 @@
             "Target" = "8:_892090739D1B48A0BA5E49837A167403"
             "Folder" = "8:_42D5AF0794B14539AF9303820A3FD54A"
             "WorkingFolder" = "8:_A476E45D757940A0827F830F67369834"
-            "Icon" = "8:"
+            "Icon" = "8:_EC2708043D2749A0A88D45BA16263DCB"
             "Feature" = "8:"
             }
         }

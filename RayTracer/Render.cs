@@ -62,7 +62,7 @@ namespace RayTracer
         public void Start(string scene, string quality, string size)
         {
             if (inProgress) return; // failsafe
-
+            
             #region Settings
             if (quality == "Low")
             {
